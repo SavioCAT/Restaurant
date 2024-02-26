@@ -1,9 +1,12 @@
+Compil:
+	make CompilFile
+	make CompilPipe
+
 CompilFile:
 	rm -rf ./bin
 	rm -rf ./File_pipe
 	mkdir File_pipe
 	mkdir bin
-	make CompilPipe
 
 CompilPipe:
 	mkfifo pipe_Client_vers_Serveur
