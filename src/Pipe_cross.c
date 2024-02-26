@@ -1,7 +1,5 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <fcntl.h>
 
 int open_tube_client_to_server() {
     char NomPipe0[] = "./File_pipe/pipe_Client_vers_Serveur"; //Adress to the pipe of communication between the client and the routing server
