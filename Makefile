@@ -9,6 +9,6 @@ CompilFile:
 	mkdir bin
 
 CompilPipe:
-	mkfifo pipe_Client_vers_Serveur
-	mkfifo pipe_Serveur_vers_Client
+	mkfifo pipe_Client_to_Server
+	mkfifo pipe_Server_to_Client
 	mv ./pipe* ./File_pipe/
