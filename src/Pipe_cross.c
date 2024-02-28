@@ -4,13 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+int pipe0, pipe1;
+
 int open_pipe (char* NamePipe) {
     int pipe = open(NamePipe, O_RDWR); //Opening the pipe in read and write
-    printf("Pipe opened: %s \n", NamePipe);
     if (pipe == -1) {
         printf("Error: Error while opening the pipe: %s\n", NamePipe);
         return -1;
     }
+    printf("Pipe opened: %s \n", NamePipe);
     return pipe;
 }
 
@@ -28,8 +30,15 @@ int write_pipe (char* NamePipe, char* Text) {
     return writing;
 }
 
-int main(void) {
-    int write = write_pipe("../File_pipe/pipe_Client_to_Server", "Hello, World!");
+int initialise(int *pipe_n0, int *pipe_n1) {
+    *pipe_n0 = open_pipe("../File_pipe/pipe_Client_to_Server");
+    *pipe_n1 = open_pipe("../File_pipe/pipe_Server_to_Client");
+    return 0;
+}
 
+int main(void) {
+    initialise(&pipe0, &pipe1); //debugging
+    printf("Pipe 0: %d\n %p\n", pipe0, &pipe0); //debugging
+    printf("Pipe 1: %d\n %p\n", pipe1, &pipe1); //debugging
     return 0;
 }
