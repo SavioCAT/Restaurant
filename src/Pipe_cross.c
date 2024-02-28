@@ -5,7 +5,7 @@
 #include <string.h>
 
 int pipe0, pipe1;
-char buffer_read[256];
+char buffer_read[1024];
 
 int open_pipe (char* NamePipe) {
     int pipe = open(NamePipe, O_RDWR); //Opening the pipe in read and write
