@@ -3,6 +3,6 @@
 #include "../header/Pipe_cross.h"
 
 int main() {
-    initialise_direct();
+    initialise();
     return 1;
 }

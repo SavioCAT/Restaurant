@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-int pipe0, pipe1;
+int pipe0, pipe1, pipe2, pipe3;
 int *ppipe0 = &pipe0;
 int *ppipe1 = &pipe1;
+int *ppipe2 = &pipe2;
+int *ppipe3 = &pipe3;
 char buffer_read[1024];
 
 int open_pipe (char* NamePipe) {
@@ -43,14 +45,11 @@ int read_pipe (int pipe_n, char *buffer) {
     return reading;
 }
 
-int initialise(int *pipe_n0, int *pipe_n1) {
-    *pipe_n0 = open_pipe("../File_pipe/pipe_Client_to_Server");
-    *pipe_n1 = open_pipe("../File_pipe/pipe_Server_to_Client");
-    return 0;
-}
 
-int initialise_direct() {
-    *ppipe0 = open_pipe("../File_pipe/pipe_Client_to_Server");
-    *ppipe1 = open_pipe("../File_pipe/pipe_Server_to_Client");
+int initialise() {
+    *ppipe0 = open_pipe("../File_pipe/pipe_Client_to_Routing");
+    *ppipe1 = open_pipe("../File_pipe/pipe_Routing_to_Client");
+    *ppipe2 = open_pipe("../File_pipe/pipe_Routing_to_Data");
+    *ppipe3 = open_pipe("../File_pipe/pipe_Data_to_Routing");
     return 0;
 }
