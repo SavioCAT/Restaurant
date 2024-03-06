@@ -1,0 +1,5 @@
+Nom du restaurant: Le bistrot
+
+Menu du matin:
+-Oeuf au plat: 5€
+-café: 1€

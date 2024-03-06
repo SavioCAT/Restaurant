@@ -9,5 +9,6 @@ int open_pipe (char* NamePipe);
 int write_pipe (char* NamePipe, char* Text);
 int read_pipe (int pipe_n, char *buffer);
 int initialise(int *pipe_n0, int *pipe_n1);
+int initialise_direct();
 
 #endif //RESTAURANT_PIPE_CROSS_H

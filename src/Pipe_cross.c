@@ -5,6 +5,8 @@
 #include <string.h>
 
 int pipe0, pipe1;
+int *ppipe0 = &pipe0;
+int *ppipe1 = &pipe1;
 char buffer_read[1024];
 
 int open_pipe (char* NamePipe) {
@@ -47,9 +49,8 @@ int initialise(int *pipe_n0, int *pipe_n1) {
     return 0;
 }
 
-int main(void) {
-    initialise(&pipe0, &pipe1); //debugging
-    write_pipe("../File_pipe/pipe_Server_to_Client", "Hello World !\n");
-    read_pipe(pipe1, buffer_read);
+int initialise_direct() {
+    *ppipe0 = open_pipe("../File_pipe/pipe_Client_to_Server");
+    *ppipe1 = open_pipe("../File_pipe/pipe_Server_to_Client");
     return 0;
 }
