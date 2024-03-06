@@ -27,9 +27,22 @@ restaurant:
       dessert:
   Le_cafe_de_jojo:
     Carte_du_matin:
-      Entree:
-      plat:
-      dessert:
+      - Entree:
+        - Cafe:
+          - Prix: "0.5€"
+          - Ingredient: "Eau, sucre, café"
+        - Croissant:
+          - Prix: "1.5€"
+          - Ingredient: "Eau, farine, beurre"
+      - plat:
+        - Oeuf_au_plat:
+          - Prix: "8€"
+          - Ingredient: "Oeuf, Bacon, pain"
+      - dessert:
+        - Glace:
+          - Prix: "4€"
+          - Ingredient: "Glace, pistache"
+
     Carte_du_midi:
       Entree:
       plat:
