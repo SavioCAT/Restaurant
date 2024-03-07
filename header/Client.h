@@ -5,6 +5,6 @@
 #ifndef RESTAURANT_CLIENT_H
 #define RESTAURANT_CLIENT_H
 
-void interface();
+void ini_interface();
 
 #endif //RESTAURANT_CLIENT_H
