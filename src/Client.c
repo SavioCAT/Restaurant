@@ -19,7 +19,7 @@ void interface_choix() {
     int choice;
 
     while(1) {
-        printf("Welcome to the restaurant management system\n");
+        printf("Welcome to the restaurant menu management application\n");
         printf("Please select an option:\n");
         printf("1. View the menu\n");
         printf("2. Close the application\n");

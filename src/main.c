@@ -4,6 +4,7 @@
 #include "../header/Client.h"
 
 int main() {
+    initialise();
     ini_interface();
     return 1;
 }

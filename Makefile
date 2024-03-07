@@ -1,6 +1,7 @@
 Compil:
 	make CompilFile
 	make CompilPipe
+	make CompilCode
 
 CompilFile:
 	rm -rf ./bin
@@ -14,3 +15,6 @@ CompilPipe:
 	mkfifo pipe_Routing_to_Data
 	mkfifo pipe_Data_to_Routing
 	mv ./pipe* ./File_pipe/
+
+CompilCode:
+	gcc ./src/*.c -o ./bin/Application.out
