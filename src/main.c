@@ -4,7 +4,9 @@
 #include "../header/Client.h"
 
 int main() {
-    initialise();
-    ini_interface();
-    return 1;
+    // initialise();
+    // return 1;
+
+    int pipe1 = open_pipe("../File_pipe/pipe_Client_to_Routing");
+    int close1 = close_pipe(pipe1);
 }

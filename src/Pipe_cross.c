@@ -21,6 +21,16 @@ int open_pipe (char* NamePipe) {
     return pipe;
 }
 
+int close_pipe (int pipe_n) {
+    int closing = close(pipe_n);
+    if (closing == -1) {
+        printf("Error: Error while closing the pipe: %d\n", pipe_n);
+        return -1;
+    }
+    printf("Pipe closed: %d \n", pipe_n);
+    return closing;
+}
+
 int write_pipe (char* NamePipe, char* Text) {
     char* buffer = (char*)malloc(sizeof(Text) + 1); //Allocating memory for the buffer
     strcpy(buffer, Text); //Copying the text to the buffer
