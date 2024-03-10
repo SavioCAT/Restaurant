@@ -2,11 +2,15 @@
 #include "../header/Routing.h"
 #include "../header/Pipe_cross.h"
 #include "../header/Client.h"
+#include "../header/Data.h"
 
 int main() {
-    // initialise();
-    // return 1;
+    int pipe0 = open_pipe("../File_pipe/pipe_Data_to_Routing");
+    read_txt_doc("../Data/Resto_1.txt");
 
-    int pipe1 = open_pipe("../File_pipe/pipe_Client_to_Routing");
-    int close1 = close_pipe(pipe1);
+
+    char buffer[1024];
+
+    read_pipe(pipe0, buffer);
+    printf("Data read from the pipe: %s\n", buffer);
 }

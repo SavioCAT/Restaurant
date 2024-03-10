@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BUFFER_SIZE 1024
+
 int pipe0, pipe1, pipe2, pipe3;
 int *ppipe0 = &pipe0;
 int *ppipe1 = &pipe1;
@@ -35,7 +37,7 @@ int write_pipe (char* NamePipe, char* Text) {
     char* buffer = (char*)malloc(sizeof(Text) + 1); //Allocating memory for the buffer
     strcpy(buffer, Text); //Copying the text to the buffer
     int write_pipe_acces = open_pipe(NamePipe); //Opening the pipe
-    int writing = (int)write(write_pipe_acces, buffer, 1024);
+    int writing = (int)write(write_pipe_acces, buffer, BUFFER_SIZE);
 
     if (writing == -1) {
         printf("Error: Error while writing to the pipe: %s\n", NamePipe);
@@ -46,7 +48,7 @@ int write_pipe (char* NamePipe, char* Text) {
 }
 
 int read_pipe (int pipe_n, char *buffer) {
-    int reading = (int)read(pipe_n, buffer, 1024);
+    int reading = (int)read(pipe_n, buffer, BUFFER_SIZE);
     if (reading == -1) {
         printf("Error: Error while reading from the pipe: %d\n", pipe_n);
         return -1;
