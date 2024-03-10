@@ -6,8 +6,9 @@
 int read_txt_doc(char* name) {
     int pipe_Data_to_routing = open_pipe("../File_pipe/pipe_Data_to_Routing"); //Opening the pipe
     FILE *f;
-    printf("Opening the file: %s\n", name);
+    //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode
+    char c;
 
     char *buffer_read = (char *)malloc(sizeof(char) * 1024); //Allocating memory for the buffer who will read the file
     char *word = (char *)malloc(sizeof(char) * 64);
@@ -17,10 +18,10 @@ int read_txt_doc(char* name) {
         return 0;
     }
 
-    while (fscanf(f, "%s", word) != EOF) { //Reading the file and writing the data to the pipe
+    while (fscanf(f, "%s", word, &c) != EOF) { //Reading the file and writing the data to the pipe
         strcat(buffer_read, word);
+        strcat(buffer_read, " ");
     }
-
     write_pipe("../File_pipe/pipe_Data_to_Routing", buffer_read);
     strcpy(buffer_read, ""); //Clearing the buffer
 
