@@ -1,19 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../header/Pipe_cross.h"
 #include "../header/Data.h"
 
-int asking_for_data(char* name) {
-    int pipe_Client_to_Routing = open_pipe("../File_pipe/pipe_Client_to_Routing"); //Opening the pipe
-    int pipe_Routing_to_Client = open_pipe("../File_pipe/pipe_Routing_to_Client"); //Opening the pipe
-    int pipe_Data_to_routing = open_pipe("../File_pipe/pipe_Data_to_Routing"); //Opening the pipe
-    int pipe_Routing_to_Data = open_pipe("../File_pipe/pipe_Routing_to_Data"); //Opening the pipe
+char* buffer_hearing;
 
-    //char* hearing_for_client = read_pipe(pipe_Client_to_Routing, buffer_hearing); //Reading the pipe
+/**
+ *  read the data from the pipe to know what the client want.
+ */
+char* asking_for_data_client() {
+    int pipe_Client_to_Routing = open_pipe("../File_pipe/pipe_Client_to_Routing"); //Opening the pipe
+
+    char* hearing_for_client = (char *)malloc(1024); //Allocating memory for the buffer who will read the file
+    strcpy(hearing_for_client, read_pipe(pipe_Client_to_Routing, buffer_hearing)); //Reading the pipe
 
     int closing_the_pipe0 = close_pipe(pipe_Client_to_Routing); //Closing the pipe
-    int closing_the_pipe1 = close_pipe(pipe_Routing_to_Client); //Closing the pipe
-    int closing_the_pipe2 = close_pipe(pipe_Data_to_routing); //Closing the pipe
-    int closing_the_pipe3 = close_pipe(pipe_Routing_to_Data); //Closing the pipe
-    return 1;
+    free(buffer_hearing);
+    return ("Inside the Routing: The client want: %s", hearing_for_client);
+}
+
+char* which_document_to_read(char* instruction) {
+    char* data = asking_for_data_client();
+    char* name = (char *)malloc(1024);
+}
+
+void distribute_data_to_client_pipe() {
+
+    int pipe_Data_to_Routing = open_pipe("../File_pipe/pipe_Data_to_Routing"); //Opening the pipe to read the data from the file
+    read_txt_doc("../Data/Resto_1.txt"); //Reading the file and writing the data to the pipe
 }

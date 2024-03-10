@@ -7,7 +7,7 @@
 
 int open_pipe (char* NamePipe);
 int write_pipe (char* NamePipe, char* Text);
-int read_pipe (int pipe_n, char *buffer);
+char* read_pipe (int pipe_n, char *buffer);
 int initialise();
 int close_pipe (int pipe_n);
 
