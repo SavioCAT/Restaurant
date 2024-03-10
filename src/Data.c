@@ -18,7 +18,7 @@ int read_txt_doc(char* name) {
     }
 
     while (fscanf(f, "%s", word) != EOF) { //Reading the file and writing the data to the pipe
-        strlcat(buffer_read, word, strlen(word + 1));
+        strcat(buffer_read, word);
     }
 
     write_pipe("../File_pipe/pipe_Data_to_Routing", buffer_read);
