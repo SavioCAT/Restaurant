@@ -34,7 +34,7 @@ int close_pipe (int pipe_n) {
 }
 
 int write_pipe (char* NamePipe, char* Text) {
-    char* buffer = (char*)malloc(sizeof(Text)); //Allocating memory for the buffer
+    char* buffer = (char*)malloc(256); //Allocating memory for the buffer
     strcpy(buffer, Text); //Copying the text to the buffer
     int write_pipe_acces = open_pipe(NamePipe); //Opening the pipe
     int writing = (int)write(write_pipe_acces, buffer, BUFFER_SIZE);
@@ -44,15 +44,16 @@ int write_pipe (char* NamePipe, char* Text) {
         return -1;
     }
     //printf("Data written to the pipe: %s\n", buffer); //penser à décommenter pour debug
+    free(buffer);
     return writing;
 }
 
-int read_pipe (int pipe_n, char *buffer) {
+char* read_pipe (int pipe_n, char* buffer) {
     int reading = (int)read(pipe_n, buffer, BUFFER_SIZE);
     if (reading == -1) {
         printf("Error: Error while reading from the pipe: %d\n", pipe_n);
-        return -1;
+        return "Error";
     }
-    printf("%s\n", buffer);
-    return reading;
+    //printf("%s\n", buffer); //Debug
+    return buffer;
 }
