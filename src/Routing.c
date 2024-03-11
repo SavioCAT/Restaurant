@@ -25,8 +25,7 @@ char* which_document_to_read(char* instruction) {
     char* name = (char *)malloc(1024);
 }
 
-void distribute_data_to_client_pipe() {
-
+void distribute_data_to_client_pipe(char* name) {
     int pipe_Data_to_Routing = open_pipe("../File_pipe/pipe_Data_to_Routing"); //Opening the pipe to read the data from the file
-    read_txt_doc("../Data/Resto_1.txt"); //Reading the file and writing the data to the pipe
+    //read_txt_doc(); //Reading the file and writing the data to the pipe
 }
