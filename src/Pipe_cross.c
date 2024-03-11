@@ -14,14 +14,14 @@ int *ppipe3 = &pipe3;
 char buffer_read[BUFFER_SIZE];
 
 int open_pipe (char* NamePipe) {
-    int pipe = open(NamePipe, O_RDWR); //Opening the pipe in read and write
+    int pipe = open(NamePipe, O_RDWR, O_NONBLOCK); //Opening the pipe in read and write
     if (pipe == -1) {
         printf("Error: Error while opening the pipe: %s\n", NamePipe);
-        return -1;
     }
     //printf("Pipe opened: %s \n", NamePipe); //penser à décommenter pour debug
     return pipe;
 }
+
 
 int close_pipe (int pipe_n) {
     int closing = close(pipe_n);
