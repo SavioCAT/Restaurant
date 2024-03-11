@@ -5,6 +5,7 @@
 #include "../header/Data.h"
 
 char* buffer_hearing_what_client_asking;
+char* name_of_the_file_client_asking;
 
 char* asking_for_data_client() {
     int pipe_Client_to_Routing = open_pipe("../File_pipe/pipe_Client_to_Routing"); //Opening the pipe
@@ -18,50 +19,14 @@ char* asking_for_data_client() {
     return ("Data received");
 }
 
-char* which_document_to_read(char* instruction) {
+char* which_document_to_read() {
     asking_for_data_client();
-    char* data = (char *)malloc(1024);
-    strcpy(data, buffer_hearing_what_client_asking);
-    char* name = (char *)malloc(64);
+    char* instruction = (char *)malloc(1024);
+    strcpy(instruction, buffer_hearing_what_client_asking);
 
-    switch(data) {
-        case "Resto_1":
-            strcpy(name, "../Data/Resto_1.txt");
-            break;
-        case "Resto_2":
-            strcpy(name, "../Data/Resto_2.txt");
-            break;
-        case "Resto_3":
-            strcpy(name, "../Data/Resto_3.txt");
-            break;
-        case "Resto_4":
-            strcpy(name, "../Data/Resto_4.txt");
-            break;
-        case "Resto_5":
-            strcpy(name, "../Data/Resto_5.txt");
-            break;
-        case "Resto_6":
-            strcpy(name, "../Data/Resto_6.txt");
-            break;
-        case "Resto_7":
-            strcpy(name, "../Data/Resto_7.txt");
-            break;
-        case "Resto_8":
-            strcpy(name, "../Data/Resto_8.txt");
-            break;
-        case "Resto_9":
-            strcpy(name, "../Data/Resto_9.txt");
-            break;
-        case "Resto_10":
-            strcpy(name, "../Data/Resto_10.txt");
-            break;
-        default:
-            strcpy(name, "../Data/Resto_1.txt");
-            break;
-    }
 
-    free(data);
-    free(name);
+
+    free(instruction);
 }
 
 void distribute_data_to_client_pipe(char* name) {
