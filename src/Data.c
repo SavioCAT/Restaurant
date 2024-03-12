@@ -5,12 +5,12 @@
 
 int read_txt_doc(char* name) {
     int pipe_Data_to_routing = open_pipe("../File_pipe/pipe_Data_to_Routing"); //Opening the pipe
-    FILE *f;
+    FILE* f;
     //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode
 
-    char *buffer_read = (char *)malloc(1024); //Allocating memory for the buffer who will read the file
-    char *word = (char *)malloc(64);
+    char* buffer_read = (char *)malloc(1024); //Allocating memory for the buffer who will read the file
+    char* word = (char *)malloc(64);
 
     if (f == NULL) {
         printf("Error: Error while opening the file: %s\n", name);

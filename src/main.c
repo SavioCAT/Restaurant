@@ -8,5 +8,13 @@
 #define BUFFER_SIZE 256
 
 int main() {
-    ini_interface();
+    write_pipe("../File_pipe/pipe_Client_to_Routing", "1");
+
+    int pipe0 = open_pipe("../File_pipe/pipe_Client_to_Routing");
+    char* text = (char*) malloc(32);
+    read_pipe(pipe0, text);
+    close_pipe(pipe0);
+    printf("%s", text);
+    free(text);
+    exit(0);
 }

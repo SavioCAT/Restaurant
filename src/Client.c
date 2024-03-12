@@ -57,7 +57,7 @@ void interface_menu() {
     //implementer la fonction pour faire analyser la requete par routing.
 
     int pipe0 = open_pipe("../File_pipe/pipe_Routing_to_Client");
-    char *answer = (char *) malloc(2056);
+    char* answer = (char *) malloc(2056);
     read_pipe(pipe0, answer);
     close_pipe(pipe0);
 
