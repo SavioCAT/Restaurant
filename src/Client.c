@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../header/Pipe_cross.h"
 
 void interface_start();
@@ -40,33 +41,30 @@ void interface_choix() {
 }
 
 void interface_menu() {
-    int choice;
+    char* choice = (char*)malloc(64);
 
-    while(1) {
-        printf("Which menu would you like to see ?\n");
-        printf("1. The menu of the restaurant \"La brasserie\"\n");
-        printf("2. Blablabla\n");
-        printf("3. Blablabla\n");
-        printf("4. Back\n");
-        printf("\nYour choice: ");
-        scanf("%d", &choice);
-        switch (choice) {
-            case 1:
-                printf("\nYou choose to look at the menu of the restaurant \"La brasserie\"\n");
-                break;
-            case 2:
-                printf("Blablabla !\n");
-                break;
-            case 3:
-                printf("Blablabla !\n");
-                break;
-            case 4:
-                interface_choix();
-            default:
-                printf("Invalid choice\n");
-                break;
-        }
+    printf("Which menu would you like to see ?\n");
+    printf("Type 0 to go back\n");
+    printf("\nYour choice: ");
+    scanf("%s", choice);
+    write_pipe("../File_pipe/pipe_Client_to_Routing", choice);
+
+    if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
+        free(choice);
+        interface_choix();
     }
+
+    //implementer la fonction pour faire analyser la requete par routing.
+
+    int pipe0 = open_pipe("../File_pipe/pipe_Routing_to_Client");
+    char *answer = (char *) malloc(2056);
+    read_pipe(pipe0, answer);
+    close_pipe(pipe0);
+
+
+    free(answer);
+    free(choice);
+
 }
 
 void ini_interface() {
