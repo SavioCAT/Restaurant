@@ -61,10 +61,8 @@ void interface_menu() {
     read_pipe(pipe0, answer);
     close_pipe(pipe0);
 
-
     free(answer);
     free(choice);
-
 }
 
 void ini_interface() {

@@ -6,17 +6,12 @@
 
 #define BUFFER_SIZE 256
 
-int pipe0, pipe1, pipe2, pipe3;
-int *ppipe0 = &pipe0;
-int *ppipe1 = &pipe1;
-int *ppipe2 = &pipe2;
-int *ppipe3 = &pipe3;
 char buffer_read[BUFFER_SIZE];
 
-int open_pipe (char* NamePipe) {
-    int pipe = open(NamePipe, O_RDWR, O_NONBLOCK); //Opening the pipe in read and write
+int open_pipe (char* name_pipe) {
+    int pipe = open(name_pipe, O_RDWR, O_NONBLOCK); //Opening the pipe in read and write
     if (pipe == -1) {
-        printf("Error: Error while opening the pipe: %s\n", NamePipe);
+        printf("Error: Error while opening the pipe: %s\n", name_pipe);
     }
     //printf("Pipe opened: %s \n", NamePipe); //penser à décommenter pour debug
     return pipe;
@@ -33,14 +28,14 @@ int close_pipe (int pipe_n) {
     return closing;
 }
 
-int write_pipe (char* NamePipe, char* Text) {
+int write_pipe (char* name_pipe, char* text) {
     char* buffer = (char*)malloc(256); //Allocating memory for the buffer
-    strcpy(buffer, Text); //Copying the text to the buffer
-    int write_pipe_acces = open_pipe(NamePipe); //Opening the pipe
+    strcpy(buffer, text); //Copying the text to the buffer
+    int write_pipe_acces = open_pipe(name_pipe); //Opening the pipe
     int writing = (int)write(write_pipe_acces, buffer, BUFFER_SIZE);
 
     if (writing == -1) {
-        printf("Error: Error while writing to the pipe: %s\n", NamePipe);
+        printf("Error: Error while writing to the pipe: %s\n", name_pipe);
         return -1;
     }
     //printf("Data written to the pipe: %s\n", buffer); //penser à décommenter pour debug
