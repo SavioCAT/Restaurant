@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../header/Pipe_cross.h"
+#include "../header/pipe_cross.h"
+#include "../header/routing.h"
 
 void interface_start();
 void interface_choix();
@@ -47,16 +48,22 @@ void interface_menu() {
     printf("Type 0 to go back\n");
     printf("\nYour choice: ");
     scanf("%s", choice);
-    write_pipe("../File_pipe/pipe_Client_to_Routing", choice);
+    write_pipe("../file_pipe/pipe_Client_to_Routing", choice);
 
     if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
         free(choice);
         interface_choix();
+        printf("\n");
+    }
+    else if (verify_request_shape(choice) == 0) {
+        printf("Invalid choice\n\n");
+        free(choice);
+        interface_menu();
     }
 
     //implementer la fonction pour faire analyser la requete par routing.
 
-    int pipe0 = open_pipe("../File_pipe/pipe_Routing_to_Client");
+    int pipe0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
     char* answer = (char *) malloc(2056);
     read_pipe(pipe0, answer);
     close_pipe(pipe0);
