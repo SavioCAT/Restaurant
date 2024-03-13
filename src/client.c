@@ -60,8 +60,13 @@ void interface_menu() {
         free(choice);
         interface_menu();
     }
+    else {
+        write_pipe("../file_pipe/pipe_Client_to_Routing", choice); //Sending the request to the pipe Client to Routing
+        ask_for_file(); //Sending the request to the pipe Routing to Data
+        free(choice);
+        interface_menu();
+    }
 
-    //implementer la fonction pour faire analyser la requete par routing.
 
     int pipe0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
     char* answer = (char *) malloc(2056);

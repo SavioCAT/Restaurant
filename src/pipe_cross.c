@@ -38,7 +38,7 @@ int write_pipe (char* name_pipe, char* text) {
         printf("Error: Error while writing to the pipe: %s\n", name_pipe);
         return -1;
     }
-    //printf("Data written to the pipe: %s\n", buffer); //penser à décommenter pour debug
+    //printf("data written to the pipe: %s\n", buffer); //penser à décommenter pour debug
     free(buffer);
     return writing;
 }

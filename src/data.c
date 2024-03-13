@@ -3,6 +3,9 @@
 #include <string.h>
 #include "../header/pipe_cross.h"
 
+
+
+
 int read_txt_doc(char* name) {
     int pipe_Data_to_routing = open_pipe("../file_pipe/pipe_Data_to_Routing"); //Opening the pipe
     FILE* f;
