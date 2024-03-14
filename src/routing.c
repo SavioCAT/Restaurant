@@ -27,9 +27,9 @@ int verify_request_shape(char* request) {
 }
 
 void ask_for_file() {
-    char* request_server = (char*) malloc(BUFFER_SIZE);
-    char* request_restaurant = (char*) malloc(BUFFER_SIZE);
-    char* request_menu  = (char*) malloc(BUFFER_SIZE);
+    char* request_server = (char*) malloc(5);
+    char* request_restaurant = (char*) malloc(5);
+    char* request_menu  = (char*) malloc(5);
     char* request = (char*) malloc(BUFFER_SIZE);
 
     char* file_name = (char*) malloc(BUFFER_SIZE);
@@ -37,16 +37,15 @@ void ask_for_file() {
     read_pipe(pipe_0, file_name);
     close_pipe(pipe_0);
 
-    for (int i = 0; i <= 3; i++) { //Extracting the data from the request
-        request_server[i] = file_name[i];
-        request_restaurant[i] = file_name[i+5];
-        request_menu[i] = file_name[i+10];
-    }
+    memcpy(request_server, file_name, 4);
+    memcpy(request_restaurant, file_name + 5, 4);
+    memcpy(request_menu, file_name + 10, 4);
 
     strcpy(request, "../data/");
     strcat(request, request_server); strcat(request, "/");
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
+    printf("%s\n", request); //DEBUG
     write_pipe("../file_pipe/pipe_routing_to_data", request); //Sending the request to the pipe Routing to Data
 
 

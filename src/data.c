@@ -16,16 +16,11 @@ char* reading_request_from_pipe() {
 int read_txt_doc() {
     int pipe_Data_to_routing = open_pipe("../file_pipe/pipe_data_to_routing"); //Opening the pipe
     char* name = reading_request_from_pipe(); //Reading the request from the pipe //DEBUG
-    printf("Flag0\n");
     FILE* f;
-    printf("Flag0.5\n");
     printf("%s\n", name); //DEBUG
     //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode
-
-    printf("Flag1\n");
     char* buffer_read = (char *)malloc(BUFFER_SIZE); //Allocating memory for the buffer who will read the file
-    printf("Flag2\n");
     char* word = (char *)malloc(BUFFER_SIZE);
 
     if (f == NULL) {
