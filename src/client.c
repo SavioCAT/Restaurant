@@ -49,7 +49,7 @@ void interface_menu() {
     printf("Type 0 to go back\n");
     printf("\nYour choice: ");
     scanf("%s", choice);
-    write_pipe("../file_pipe/pipe_Client_to_Routing", choice);
+    write_pipe("../file_pipe/pipe_client_to_routing", choice);
 
     if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
         free(choice);
@@ -62,13 +62,13 @@ void interface_menu() {
         interface_menu();
     }
     else {
-        write_pipe("../file_pipe/pipe_Client_to_Routing", choice); //Sending the request to the pipe Client to Routing
+        write_pipe("../file_pipe/pipe_client_to_routing", choice); //Sending the request to the pipe Client to Routing
         ask_for_file(); //Sending the request to the pipe Routing to Data
         read_txt_doc(); //fonction a debug
         printf("flag3\n");
         get_back_data_from_data();
 
-        int pipe_0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
+        int pipe_0 = open_pipe("../file_pipe/pipe_routing_to_client");
         char* answer = (char *) malloc(4112);
         read_pipe(pipe_0, answer);
         close_pipe(pipe_0);
@@ -79,7 +79,7 @@ void interface_menu() {
     }
 
 
-    int pipe0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
+    int pipe0 = open_pipe("../file_pipe/pipe_routing_to_client");
     char* answer = (char *) malloc(2056);
     read_pipe(pipe0, answer);
     close_pipe(pipe0);

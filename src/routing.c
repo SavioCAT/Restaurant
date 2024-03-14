@@ -5,7 +5,7 @@
 #include "../header/data.h"
 
 char* find_request() {
-    int pipe_0 = open_pipe("../file_pipe/pipe_Client_to_Routing");
+    int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
     char* text = (char*) malloc(2056);
     read_pipe(pipe_0, text);
     close_pipe(pipe_0);
@@ -31,7 +31,7 @@ void ask_for_file() {
     char* request = (char*) malloc(512);
 
     char* file_name = (char*) malloc(64);
-    int pipe_0 = open_pipe("../file_pipe/pipe_Client_to_Routing");
+    int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
     read_pipe(pipe_0, file_name);
     close_pipe(pipe_0);
 
@@ -45,7 +45,7 @@ void ask_for_file() {
     strcat(request, request_server); strcat(request, "/");
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
-    write_pipe("../file_pipe/pipe_Routing_to_Data", request); //Sending the request to the pipe Routing to Data
+    write_pipe("../file_pipe/pipe_routing_to_data", request); //Sending the request to the pipe Routing to Data
 
 
     free(file_name);
@@ -56,9 +56,9 @@ void ask_for_file() {
 }
 
 void get_back_data_from_data() {
-    int pipe_0 = open_pipe("../file_pipe/pipe_Data_to_Routing");
+    int pipe_0 = open_pipe("../file_pipe/pipe_data_to_routing");
     char* text = (char*) malloc(4112);
     read_pipe(pipe_0, text);
     close_pipe(pipe_0);
-    write_pipe("../file_pipe/pipe_Routing_to_Client", text);
+    write_pipe("../file_pipe/pipe_routing_to_client", text);
 }
