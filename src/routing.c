@@ -37,15 +37,17 @@ void ask_for_file() {
     read_pipe(pipe_0, file_name);
     close_pipe(pipe_0);
 
-    memcpy(request_server, file_name, 4);
-    memcpy(request_restaurant, file_name + 5, 4);
-    memcpy(request_menu, file_name + 10, 4);
+    strncpy(request_server, file_name, 4);
+    request_server[4] = '\0';
+    strncpy(request_restaurant, file_name + 5, 4);
+    request_restaurant[4] = '\0';
+    strncpy(request_menu, file_name + 10, 4);
+    request_menu[4] = '\0';
 
     strcpy(request, "../data/");
     strcat(request, request_server); strcat(request, "/");
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
-    printf("%s\n", request); //DEBUG
     write_pipe("../file_pipe/pipe_routing_to_data", request); //Sending the request to the pipe Routing to Data
 
 
