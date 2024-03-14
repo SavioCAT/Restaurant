@@ -64,9 +64,9 @@ void interface_menu() {
     else {
         write_pipe("../file_pipe/pipe_Client_to_Routing", choice); //Sending the request to the pipe Client to Routing
         ask_for_file(); //Sending the request to the pipe Routing to Data
-        read_txt_doc();
+        read_txt_doc(); //fonction a debug
         printf("flag3\n");
-        get_back_data_from_data(); //fonction a debug
+        get_back_data_from_data();
 
         int pipe_0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
         char* answer = (char *) malloc(4112);
