@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 4096
 
 char buffer_read[BUFFER_SIZE];
 
@@ -29,7 +29,7 @@ int close_pipe (int pipe_n) {
 }
 
 int write_pipe (char* name_pipe, char* text) {
-    char* buffer = (char*)malloc(256); //Allocating memory for the buffer
+    char* buffer = (char*)malloc(BUFFER_SIZE); //Allocating memory for the buffer
     strcpy(buffer, text); //Copying the text to the buffer
     int write_pipe_acces = open_pipe(name_pipe); //Opening the pipe
     int writing = (int)write(write_pipe_acces, buffer, BUFFER_SIZE);

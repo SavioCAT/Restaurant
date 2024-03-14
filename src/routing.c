@@ -4,9 +4,11 @@
 #include "../header/pipe_cross.h"
 #include "../header/data.h"
 
+#define BUFFER_SIZE 4096
+
 char* find_request() {
     int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
-    char* text = (char*) malloc(2056);
+    char* text = (char*) malloc(BUFFER_SIZE);
     read_pipe(pipe_0, text);
     close_pipe(pipe_0);
     return text;
@@ -25,12 +27,12 @@ int verify_request_shape(char* request) {
 }
 
 void ask_for_file() {
-    char* request_server = (char*) malloc(64);
-    char* request_restaurant = (char*) malloc(64);
-    char* request_menu  = (char*) malloc(64);
-    char* request = (char*) malloc(512);
+    char* request_server = (char*) malloc(BUFFER_SIZE);
+    char* request_restaurant = (char*) malloc(BUFFER_SIZE);
+    char* request_menu  = (char*) malloc(BUFFER_SIZE);
+    char* request = (char*) malloc(BUFFER_SIZE);
 
-    char* file_name = (char*) malloc(64);
+    char* file_name = (char*) malloc(BUFFER_SIZE);
     int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
     read_pipe(pipe_0, file_name);
     close_pipe(pipe_0);
@@ -57,7 +59,7 @@ void ask_for_file() {
 
 void get_back_data_from_data() {
     int pipe_0 = open_pipe("../file_pipe/pipe_data_to_routing");
-    char* text = (char*) malloc(4112);
+    char* text = (char*) malloc(BUFFER_SIZE);
     read_pipe(pipe_0, text);
     close_pipe(pipe_0);
     write_pipe("../file_pipe/pipe_routing_to_client", text);

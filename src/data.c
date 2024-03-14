@@ -3,9 +3,11 @@
 #include <string.h>
 #include "../header/pipe_cross.h"
 
+#define BUFFER_SIZE 4096
+
 char* reading_request_from_pipe() {
     int pipe_0 = open_pipe("../file_pipe/pipe_routing_to_data"); //Opening the pipe
-    char* text = (char*) malloc(256); //Allocating memory for the text
+    char* text = (char*) malloc(BUFFER_SIZE); //Allocating memory for the text
     read_pipe(pipe_0, text); //Reading the pipe
     close_pipe(pipe_0); //Closing the pipe
     return text;
@@ -22,9 +24,9 @@ int read_txt_doc() {
     f = fopen(name, "r"); //Opening the file in read mode
 
     printf("Flag1\n");
-    char* buffer_read = (char *)malloc(1024); //Allocating memory for the buffer who will read the file
+    char* buffer_read = (char *)malloc(BUFFER_SIZE); //Allocating memory for the buffer who will read the file
     printf("Flag2\n");
-    char* word = (char *)malloc(64);
+    char* word = (char *)malloc(BUFFER_SIZE);
 
     if (f == NULL) {
         printf("Error: Error while opening the file: %s\n", name);

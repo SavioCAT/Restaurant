@@ -4,6 +4,7 @@
 #include "../header/pipe_cross.h"
 #include "../header/routing.h"
 #include "../header/data.h"
+#define BUFFER_SIZE 4096
 
 void interface_start();
 void interface_choix();
@@ -43,7 +44,7 @@ void interface_choix() {
 }
 
 void interface_menu() {
-    char* choice = (char*)malloc(64);
+    char* choice = (char*)malloc(BUFFER_SIZE);
 
     printf("Which menu would you like to see ?\n");
     printf("Type 0 to go back\n");
@@ -69,7 +70,7 @@ void interface_menu() {
         get_back_data_from_data();
 
         int pipe_0 = open_pipe("../file_pipe/pipe_routing_to_client");
-        char* answer = (char *) malloc(4112);
+        char* answer = (char *) malloc(BUFFER_SIZE);
         read_pipe(pipe_0, answer);
         close_pipe(pipe_0);
 
@@ -80,7 +81,7 @@ void interface_menu() {
 
 
     int pipe0 = open_pipe("../file_pipe/pipe_routing_to_client");
-    char* answer = (char *) malloc(2056);
+    char* answer = (char *) malloc(BUFFER_SIZE);
     read_pipe(pipe0, answer);
     close_pipe(pipe0);
 
