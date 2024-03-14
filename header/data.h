@@ -5,6 +5,6 @@
 #ifndef RESTAURANT_DATA_H
 #define RESTAURANT_DATA_H
 
-int read_txt_doc(char* name);
+int read_txt_doc();
 
 #endif //RESTAURANT_DATA_H

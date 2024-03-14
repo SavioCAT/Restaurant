@@ -3,11 +3,17 @@
 #include <string.h>
 #include "../header/pipe_cross.h"
 
+char* reading_request_from_pipe() {
+    int pipe_0 = open_pipe("../file_pipe/pipe_Routing_to_Data"); //Opening the pipe
+    char *text = (char *) malloc(126); //Allocating memory for the buffer who will read the pipe
+    read_pipe(pipe_0, text); //Reading the pipe
+    close_pipe(pipe_0); //Closing the pipe
+    return text;
+}
 
-
-
-int read_txt_doc(char* name) {
+int read_txt_doc() {
     int pipe_Data_to_routing = open_pipe("../file_pipe/pipe_Data_to_Routing"); //Opening the pipe
+    char* name = reading_request_from_pipe(); //Reading the request from the pipe
     FILE* f;
     //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode

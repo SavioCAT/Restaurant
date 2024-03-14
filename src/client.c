@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../header/pipe_cross.h"
 #include "../header/routing.h"
+#include "../header/data.h"
 
 void interface_start();
 void interface_choix();
@@ -63,6 +64,16 @@ void interface_menu() {
     else {
         write_pipe("../file_pipe/pipe_Client_to_Routing", choice); //Sending the request to the pipe Client to Routing
         ask_for_file(); //Sending the request to the pipe Routing to Data
+        read_txt_doc();
+        printf("flag3\n");
+        get_back_data_from_data(); //fonction a debug
+
+        int pipe_0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
+        char* answer = (char *) malloc(4112);
+        read_pipe(pipe_0, answer);
+        close_pipe(pipe_0);
+
+        printf("%s\n", answer);
         free(choice);
         interface_menu();
     }

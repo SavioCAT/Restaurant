@@ -25,9 +25,9 @@ int verify_request_shape(char* request) {
 }
 
 void ask_for_file() {
-    char* request_server = (char*) malloc(4);
-    char* request_restaurant = (char*) malloc(4);
-    char* request_menu  = (char*) malloc(4);
+    char* request_server = (char*) malloc(64);
+    char* request_restaurant = (char*) malloc(64);
+    char* request_menu  = (char*) malloc(64);
     char* request = (char*) malloc(64);
 
     char* file_name = (char*) malloc(64);
@@ -52,4 +52,12 @@ void ask_for_file() {
     free(request_restaurant);
     free(request_menu);
     free(request);
+}
+
+char* get_back_data_from_data() {
+    int pipe_0 = open_pipe("../file_pipe/pipe_Routing_to_Client");
+    char* text = (char*) malloc(2056);
+    read_pipe(pipe_0, text);
+    close_pipe(pipe_0);
+    return text;
 }
