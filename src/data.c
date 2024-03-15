@@ -20,6 +20,7 @@ int read_txt_doc() {
     printf("%s\n", name); //DEBUG
     //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode
+
     char* buffer_read = (char *)malloc(BUFFER_SIZE); //Allocating memory for the buffer who will read the file
     char* word = (char *)malloc(BUFFER_SIZE);
 
