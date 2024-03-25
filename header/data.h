@@ -8,7 +8,6 @@
 
 int read_txt_doc();
 void startup_data();
-Pipe pipe;
 int ini_data();
 
 #endif //RESTAURANT_DATA_H
