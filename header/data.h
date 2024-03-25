@@ -6,5 +6,6 @@
 #define RESTAURANT_DATA_H
 
 int read_txt_doc();
+void startup_data();
 
 #endif //RESTAURANT_DATA_H

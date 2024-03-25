@@ -1,19 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../header/pipe.h"
 
 #define BUFFER_SIZE 4096
 
+Pipe pipe;
+
+void startup_data(){
+    pipe_init(&pipe, "../file_pipe/pipe_routing_to_data", "../file_pipe/pipe_data_to_routing");
+}
+
 char* reading_request_from_pipe() {
-    int pipe_0 = open_pipe("../file_pipe/pipe_routing_to_data"); //Opening the pipe
     char* text = (char*) malloc(BUFFER_SIZE); //Allocating memory for the text
-    read_pipe(pipe_0, text); //Reading the pipe
-    close_pipe(pipe_0); //Closing the pipe
+    pipe_read(&pipe, text, BUFFER_SIZE); //Reading the request from the pipe
     return text;
 }
 
 int read_txt_doc() {
-    int pipe_Data_to_routing = open_pipe("../file_pipe/pipe_data_to_routing"); //Opening the pipe
     char* name = reading_request_from_pipe(); //Reading the request from the pipe //DEBUG
     FILE* f;
     printf("%s\n", name); //DEBUG
@@ -32,15 +36,13 @@ int read_txt_doc() {
         strcat(buffer_read, word);
     }
     strcat(buffer_read, "\n");
-    write_pipe("../file_pipe/pipe_data_to_routing", buffer_read);
+    pipe_write(&pipe, buffer_read); //Writing the data to the pipe
 
     //printf("%s", buffer_read); //debug
     strcpy(buffer_read, ""); //Clearing the buffer
 
-    fclose(f);
-    int closing_the_pipe = close_pipe(pipe_Data_to_routing);
+    fclose(f); //Closing the file
     free(buffer_read);
     free(word);
-    return closing_the_pipe;
+    return 1;
 }
-

@@ -13,6 +13,9 @@ void interface_choix();
 void interface_menu();
 
 void interface_start() {
+    pipe_init(&pipe, "../file_pipe/pipe_routing_to_client", "../file_pipe/pipe_client_to_routing");
+    startup_routing();
+    startup_data();
     printf("___________________________\n");
     printf("|     Project EL-3032     |\n");
     printf("|     Savio BOISSINOT     |\n");
@@ -51,7 +54,7 @@ void interface_menu() {
     printf("Type 0 to go back\n");
     printf("\nYour choice: ");
     scanf("%s", choice);
-    write_pipe("../file_pipe/pipe_client_to_routing", choice);
+    pipe_write(&pipe, choice);
 
     if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
         free(choice);
@@ -65,7 +68,12 @@ void interface_menu() {
     }
     else {
         printf("flag demande: %s\n ", choice);
-        write_pipe("../file_pipe/pipe_client_to_routing", choice); //Sending the request to the pipe Client to Routing
+
+        int quantity = pipe_write(&pipe, choice);
+        if (quantity < 1) {
+            printf("%d\n", quantity);
+            exit(-1);
+        }
         ask_for_file(); //Sending the request to the pipe Routing to Data
         int read = read_txt_doc();
         if (read == 0) {
@@ -75,21 +83,16 @@ void interface_menu() {
         }
         get_back_data_from_data();
 
-        int pipe_0 = open_pipe("../file_pipe/pipe_routing_to_client");
         char* answer = (char *) malloc(BUFFER_SIZE);
-        read_pipe(pipe_0, answer);
-        close_pipe(pipe_0);
+        pipe_read(&pipe, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
 
         printf("%s\n", answer);
         free(choice);
         interface_menu();
     }
 
-
-    int pipe0 = open_pipe("../file_pipe/pipe_routing_to_client");
     char* answer = (char *) malloc(BUFFER_SIZE);
-    read_pipe(pipe0, answer);
-    close_pipe(pipe0);
+    pipe_read(&pipe, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
 
     free(answer);
     free(choice);

@@ -2,14 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../header/data.h"
+#include "../header/pipe.h"
 
 #define BUFFER_SIZE 4096
 
+Pipe pipe_routing_data;
+Pipe pipe_client_routing;
+
+void startup_routing(){
+    pipe_init(&pipe_routing_data, "../file_pipe/pipe_data_to_routing", "../file_pipe/pipe_routing_to_data");
+    pipe_init(&pipe_client_routing, "../file_pipe/pipe_client_to_routing", "../file_pipe/pipe_routing_to_client");
+}
+
 char* find_request() {
-    int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
     char* text = (char*) malloc(BUFFER_SIZE);
-    read_pipe(pipe_0, text);
-    close_pipe(pipe_0);
+    pipe_read(&pipe_client_routing, text, BUFFER_SIZE);
     return text;
 }
 
@@ -32,9 +39,10 @@ void ask_for_file() {
     char* request = (char*) malloc(sizeof(char) * 24);
 
     char* file_name = (char*) malloc(BUFFER_SIZE);
-    int pipe_0 = open_pipe("../file_pipe/pipe_client_to_routing");
-    read_pipe(pipe_0, file_name);
-    close_pipe(pipe_0);
+    int retour = 0;
+    do {
+        retour = pipe_read(&pipe_client_routing, file_name, BUFFER_SIZE); //Reading the request from the pipe (client to routing)
+    } while (retour == 0);
 
     printf("ce que récupère ask_for_file:%s\n", file_name);
 
@@ -55,7 +63,7 @@ void ask_for_file() {
     printf("request traitement3:%s\n", request);
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
     printf("request traitement4:%s\n", request);
-    write_pipe("../file_pipe/pipe_routing_to_data", request); //Sending the request to the pipe Routing to Data
+    pipe_write(&pipe_routing_data, request); //Sending the request to the data process
     printf("flag what asking for ?: %s", request);
 
 
@@ -67,9 +75,7 @@ void ask_for_file() {
 }
 
 void get_back_data_from_data() {
-    int pipe_0 = open_pipe("../file_pipe/pipe_data_to_routing");
     char* text = (char*) malloc(BUFFER_SIZE);
-    read_pipe(pipe_0, text);
-    close_pipe(pipe_0);
-    write_pipe("../file_pipe/pipe_routing_to_client", text);
+    pipe_read(&pipe_routing_data, text, BUFFER_SIZE); //Reading the data from the data process
+    pipe_write(&pipe_client_routing, text);
 }

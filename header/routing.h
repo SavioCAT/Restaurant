@@ -8,5 +8,6 @@
 int verify_request_shape(char* request);
 void ask_for_file();
 void get_back_data_from_data();
+void startup_routing();
 
 #endif //RESTAURANT_ROUTING_H
