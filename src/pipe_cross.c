@@ -32,12 +32,18 @@ int write_pipe (char* name_pipe, char* text) {
     char* buffer = (char*)malloc(BUFFER_SIZE); //Allocating memory for the buffer
     strcpy(buffer, text); //Copying the text to the buffer
     int write_pipe_acces = open_pipe(name_pipe); //Opening the pipe
+    printf("success to open pipe \n");
+
     int writing = (int)write(write_pipe_acces, buffer, BUFFER_SIZE);
 
     if (writing == -1) {
         printf("Error: Error while writing to the pipe: %s\n", name_pipe);
         return -1;
     }
+    else{
+        printf("Success to write");
+    }
+    close_pipe(write_pipe_acces);
     //printf("data written to the pipe: %s\n", buffer); //penser à décommenter pour debug
     free(buffer);
     return writing;

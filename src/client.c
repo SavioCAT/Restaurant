@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../header/pipe_cross.h"
 #include "../header/routing.h"
 #include "../header/data.h"
+#include "../header/pipe.h"
 #define BUFFER_SIZE 4096
+
+Pipe pipe;
 
 void interface_start();
 void interface_choix();
 void interface_menu();
-
 
 void interface_start() {
     printf("___________________________\n");
@@ -63,6 +64,7 @@ void interface_menu() {
         interface_menu();
     }
     else {
+        printf("flag demande: %s\n ", choice);
         write_pipe("../file_pipe/pipe_client_to_routing", choice); //Sending the request to the pipe Client to Routing
         ask_for_file(); //Sending the request to the pipe Routing to Data
         int read = read_txt_doc();
