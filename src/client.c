@@ -6,7 +6,7 @@
 #include "../header/pipe.h"
 #define BUFFER_SIZE 4096
 
-Pipe pipe;
+Pipe pipe1;
 
 void interface_start();
 void interface_choix();
@@ -54,7 +54,7 @@ void interface_menu() {
     printf("Type 0 to go back\n");
     printf("\nYour choice: ");
     scanf("%s", choice);
-    pipe_write(&pipe, choice);
+    pipe_write(&pipe1, choice);
 
     if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
         free(choice);
@@ -69,7 +69,7 @@ void interface_menu() {
     else {
         printf("flag demande: %s\n ", choice);
 
-        int quantity = pipe_write(&pipe, choice);
+        int quantity = pipe_write(&pipe1, choice);
         if (quantity < 1) {
             printf("%d\n", quantity);
             exit(-1);
@@ -84,7 +84,7 @@ void interface_menu() {
         get_back_data_from_data();
 
         char* answer = (char *) malloc(BUFFER_SIZE);
-        pipe_read(&pipe, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
+        pipe_read(&pipe1, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
 
         printf("%s\n", answer);
         free(choice);
@@ -92,7 +92,7 @@ void interface_menu() {
     }
 
     char* answer = (char *) malloc(BUFFER_SIZE);
-    pipe_read(&pipe, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
+    pipe_read(&pipe1, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
 
     free(answer);
     free(choice);
