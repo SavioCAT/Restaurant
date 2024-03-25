@@ -13,7 +13,7 @@ void interface_choix();
 void interface_menu();
 
 void interface_start() {
-    pipe_init(&pipe, "../file_pipe/pipe_routing_to_client", "../file_pipe/pipe_client_to_routing");
+    pipe_init(&pipe1, "../file_pipe/pipe_routing_to_client", "../file_pipe/pipe_client_to_routing");
     startup_routing();
     startup_data();
     printf("___________________________\n");
