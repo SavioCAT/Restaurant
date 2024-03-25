@@ -129,7 +129,7 @@ int pipe_read(Pipe *self, char buffer[], size_t size) {
 }
 
 int pipe_write(Pipe *self, char *to_send) {
-  int res = pipe_open_write(self);
+  int res = pipe_open_write_non_block(self);
   if (res < 0) {
     return res;
   }

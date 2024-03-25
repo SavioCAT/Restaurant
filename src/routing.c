@@ -5,18 +5,13 @@
 #include "../header/pipe.h"
 
 #define BUFFER_SIZE 4096
+Pipe *pointer_to_pipe_1;
+Pipe *pointer_to_pipe_2;
 
-Pipe pipe_routing_data;
-Pipe pipe_client_routing;
 
-void startup_routing(){
-    pipe_init(&pipe_routing_data, "../file_pipe/pipe_data_to_routing", "../file_pipe/pipe_routing_to_data");
-    pipe_init(&pipe_client_routing, "../file_pipe/pipe_client_to_routing", "../file_pipe/pipe_routing_to_client");
-}
-
-char* find_request() {
+char* find_request(Pipe pipe_1) {
     char* text = (char*) malloc(BUFFER_SIZE);
-    pipe_read(&pipe_client_routing, text, BUFFER_SIZE);
+    pipe_read(&pipe_1, text, BUFFER_SIZE);
     return text;
 }
 
@@ -41,7 +36,7 @@ void ask_for_file() {
     char* file_name = (char*) malloc(BUFFER_SIZE);
     int retour = 0;
     do {
-        retour = pipe_read(&pipe_client_routing, file_name, BUFFER_SIZE); //Reading the request from the pipe (client to routing)
+        retour = pipe_read(pointer_to_pipe_1, file_name, BUFFER_SIZE); //Reading the request from the pipe (client to routing)
     } while (retour == 0);
 
     printf("ce que récupère ask_for_file:%s\n", file_name);
@@ -53,18 +48,11 @@ void ask_for_file() {
     strncpy(request_menu, file_name + 10, 4);
     request_menu[4] = '\0';
 
-    printf("request avant traitement:%s\n", request);
-
     strcpy(request, "../data/");
-    printf("request traitement1:%s\n", request);
     strcat(request, request_server); strcat(request, "/");
-    printf("request traitement2:%s\n", request);
     strcat(request, request_restaurant); strcat(request, "/");
-    printf("request traitement3:%s\n", request);
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
-    printf("request traitement4:%s\n", request);
-    pipe_write(&pipe_routing_data, request); //Sending the request to the data process
-    printf("flag what asking for ?: %s", request);
+    pipe_write(pointer_to_pipe_2, request); //Sending the request to the data process
 
 
     free(file_name);
@@ -74,8 +62,21 @@ void ask_for_file() {
     free(request);
 }
 
-void get_back_data_from_data() {
+void get_back_data_from_data(Pipe pipe_1, Pipe pipe_2) {
     char* text = (char*) malloc(BUFFER_SIZE);
-    pipe_read(&pipe_routing_data, text, BUFFER_SIZE); //Reading the data from the data process
-    pipe_write(&pipe_client_routing, text);
+    pipe_read(pointer_to_pipe_2, text, BUFFER_SIZE); //Reading the data from the data process
+    pipe_write(pointer_to_pipe_1, text);
+}
+
+int ini_routing() {
+    Pipe pipe_1, pipe_2;
+    pipe_init(&pipe_1, "pipe_Client_to_Routing", "pipe_Routing_to_Client");
+    pipe_init(&pipe_2, "pipe_Routing_to_Data", "pipe_Data_to_Routing");
+    printf("in: %d\n", pipe_1.in);
+    printf("out: %d\n", pipe_1.out);
+    printf("in: %d\n", pipe_2.in);
+    printf("out: %d\n", pipe_2.out);
+    pointer_to_pipe_1 = &pipe_1;
+    pointer_to_pipe_2 = &pipe_2;
+    return 0;
 }

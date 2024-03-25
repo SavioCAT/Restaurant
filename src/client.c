@@ -4,18 +4,17 @@
 #include "../header/routing.h"
 #include "../header/data.h"
 #include "../header/pipe.h"
+#include "../header/client.h"
 #define BUFFER_SIZE 4096
 
-Pipe pipe1;
-
 void interface_start();
-void interface_choix();
-void interface_menu();
+int interface_choix();
+Answer interface_menu();
 
+Pipe *pointer_to_pipe_0;
+
+//Graphic interface part
 void interface_start() {
-    pipe_init(&pipe1, "../file_pipe/pipe_routing_to_client", "../file_pipe/pipe_client_to_routing");
-    startup_routing();
-    startup_data();
     printf("___________________________\n");
     printf("|     Project EL-3032     |\n");
     printf("|     Savio BOISSINOT     |\n");
@@ -23,10 +22,9 @@ void interface_start() {
     printf("|_________________________|\n\n\n");
 }
 
-void interface_choix() {
+int interface_choix() {
     int choice;
 
-    while(1) {
         printf("Welcome to the restaurant menu management application\n");
         printf("Please select an option:\n");
         printf("1. View the menu\n");
@@ -36,70 +34,63 @@ void interface_choix() {
         switch (choice) {
             case 1:
                 printf("\nYou choose to look at the menus\n");
-                interface_menu();
+                return 1;
             case 2:
                 printf("Goodbye !\n");
                 exit(0);
             default:
                 printf("Invalid choice\n");
-                break;
+                return 0;
         }
-    }
 }
 
-void interface_menu() {
+Answer interface_menu() {
     char* choice = (char*)malloc(BUFFER_SIZE);
+    Answer answer;
 
     printf("Which menu would you like to see ?\n");
     printf("Type 0 to go back\n");
     printf("\nYour choice: ");
     scanf("%s", choice);
-    pipe_write(&pipe1, choice);
 
     if (strcmp(choice, "0") == 0 && strlen(choice) == 1){
         free(choice);
-        interface_choix();
+        answer.code = 0;
+        answer.answer = "\0";
         printf("\n");
+        return answer;
     }
     else if (verify_request_shape(choice) == 0) {
-        printf("Invalid choice\n\n");
         free(choice);
-        interface_menu();
+        answer.code = -1;
+        answer.answer = "\0";
+        printf("\n");
+        return answer;
     }
     else {
-        printf("flag demande: %s\n ", choice);
-
-        int quantity = pipe_write(&pipe1, choice);
-        if (quantity < 1) {
-            printf("%d\n", quantity);
-            exit(-1);
-        }
-        ask_for_file(); //Sending the request to the pipe Routing to Data
-        int read = read_txt_doc();
-        if (read == 0) {
-            printf("Error: The file does not exist\n");
-            free(choice);
-            interface_menu();
-        }
-        get_back_data_from_data();
-
-        char* answer = (char *) malloc(BUFFER_SIZE);
-        pipe_read(&pipe1, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
-
-        printf("%s\n", answer);
-        free(choice);
-        interface_menu();
+        answer.code = 1;
+        answer.answer = choice;
+        return answer;
     }
-
-    char* answer = (char *) malloc(BUFFER_SIZE);
-    pipe_read(&pipe1, answer, BUFFER_SIZE); //Reading the data from the pipe (data to routing
-
-    free(answer);
-    free(choice);
 }
 
-void ini_interface() {
-    interface_start();
-    interface_choix();
+//Logic part
+
+int ini_client() {
+    Pipe pipe_0;
+    pipe_init(&pipe_0, "pipe_Routing_to_Client", "pipe_Client_to_Routing");
+    printf("in: %d\n", pipe_0.in);
+    printf("out: %d\n", pipe_0.out);
+    pointer_to_pipe_0 = &pipe_0;
+    return 0;
 }
 
+int send_data_to_routing(char* request) {
+    int result = pipe_write(pointer_to_pipe_0, request);
+    if (result < 0) {
+        exit(-1);
+    }
+    else {
+        return 1;
+    }
+}
