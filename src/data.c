@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../header/pipe.h"
+#include "../header/pipe_controler.h"
 
 #define BUFFER_SIZE 4096
 
