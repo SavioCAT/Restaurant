@@ -1,13 +1,23 @@
 #include "../header/client.h"
-#include "../header/pipe.h"
 #include "../header/data.h"
 #include "../header/routing.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include "../header/pipe_controler.h"
 
 #define BUFFER_SIZE 4096
 
+
+
 int main() {
+
+    Pipe* pipe1;
+    Pipe* pipe2;
+
+    create_pipe("pipe_1_right", "pipe_1_left");
+    initialise_pipe(pipe1, "pipe_1_right", "pipe_1_left");
+    create_pipe("pipe_2_right", "pipe_2_left");
+    initialise_pipe(pipe1, "pipe_2_right", "pipe_2_left");
+
     ini_client();
     ini_routing();
     ini_data();

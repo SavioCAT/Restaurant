@@ -3,8 +3,8 @@
 #include <string.h>
 #include "../header/routing.h"
 #include "../header/data.h"
-#include "../header/pipe.h"
 #include "../header/client.h"
+#include "../header/pipe_controler.h"
 #define BUFFER_SIZE 4096
 
 void interface_start();
@@ -78,6 +78,7 @@ Answer interface_menu() {
 
 int ini_client() {
     Pipe pipe_0;
+    create_pipe("pipe_client_in","pipe_client_out")
     pipe_init(&pipe_0, "pipe_Routing_to_Client", "pipe_Client_to_Routing");
     printf("in: %d\n", pipe_0.in);
     printf("out: %d\n", pipe_0.out);

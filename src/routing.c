@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../header/data.h"
-#include "../header/pipe.h"
 
 #define BUFFER_SIZE 4096
 Pipe *pointer_to_pipe_1;
