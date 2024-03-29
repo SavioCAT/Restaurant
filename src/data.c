@@ -5,9 +5,11 @@
 
 #define BUFFER_SIZE 4096
 
+Pipe* local_server_pipe;
+
 char* reading_request_from_pipe() {
     char* text = (char*) malloc(BUFFER_SIZE); //Allocating memory for the text
-    read_pipe(server_pipe->id_in, text); //Reading the request from the pipe
+    read_pipe(local_server_pipe->id_in, text); //Reading the request from the pipe
     return text;
 }
 
@@ -30,7 +32,7 @@ int read_txt_doc() {
         strcat(buffer_read, word);
     }
     strcat(buffer_read, "\n");
-    write_pipe(server_pipe->id_out, buffer_read); //Writing the data to the pipe
+    write_pipe(local_server_pipe->id_out, buffer_read); //Writing the data to the pipe
 
     //printf("%s", buffer_read); //debug
     strcpy(buffer_read, ""); //Clearing the buffer
@@ -41,13 +43,7 @@ int read_txt_doc() {
     return 1;
 }
 
-/**
-int ini_data() {
-    Pipe pipe_0;
-    pipe_init(&pipe_0, "pipe_Routing_to_Data", "pipe_Data_to_Routing");
-    printf("in: %d\n", pipe_0.in);
-    printf("out: %d\n", pipe_0.out);
-    pointer_to_pipe_3 = &pipe_0;
-    return 0;
+
+void ini_data(Pipe* id_pipe) {
+    local_server_pipe = id_pipe;
 }
-**/

@@ -11,7 +11,7 @@ void interface_start();
 int interface_choix();
 Answer interface_menu();
 
-Pipe *pointer_to_pipe_0;
+Pipe* local_client_pipe;
 
 //Graphic interface part
 void interface_start() {
@@ -74,22 +74,13 @@ Answer interface_menu() {
     }
 }
 
-//Logic part
-
-/**
-int ini_client() {
-    Pipe pipe_0;
-    create_pipe("pipe_client_in","pipe_client_out")
-    pipe_init(&pipe_0, "pipe_Routing_to_Client", "pipe_Client_to_Routing");
-    printf("in: %d\n", pipe_0.in);
-    printf("out: %d\n", pipe_0.out);
-    pointer_to_pipe_0 = &pipe_0;
-    return 0;
+void ini_client(Pipe* id_pipe) {
+    local_client_pipe = id_pipe;
 }
-**/
+
 
 int send_data_to_routing(char* request, Pipe *pipe_pointer) {
-    int result = write_pipe(pipe_pointer->id_out, request);
+    int result = write_pipe(local_client_pipe->id_out, request);
     if (result < 0) {
         exit(-1);
     }
