@@ -89,7 +89,7 @@ int ini_client() {
 **/
 
 int send_data_to_routing(char* request, Pipe *pipe_pointer) {
-    int result = write_pipe(pipe_pointer, request);
+    int result = write_pipe(pipe_pointer->id_out, request);
     if (result < 0) {
         exit(-1);
     }

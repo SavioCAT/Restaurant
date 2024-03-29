@@ -5,6 +5,8 @@
 #ifndef RESTAURANT_CLIENT_H
 #define RESTAURANT_CLIENT_H
 
+#include "./pipe_controler.h"
+
 typedef struct {
     int code;
     char* answer;
@@ -14,6 +16,6 @@ Answer interface_menu();
 void interface_start();
 int interface_choix();
 int ini_client();
-int send_data_to_routing(char* request, Pipe *pipe_pointer);
+int send_data_to_routing(char* request, Pipe* pipe_pointer);
 
 #endif //RESTAURANT_CLIENT_H

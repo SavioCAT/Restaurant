@@ -49,14 +49,14 @@ int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
     }
 }
 
-int write_pipe(Pipe* self, char* text) {
-    if (self->id_out > 0) {
+int write_pipe(int self, char* text) {
+    if (self > 0) {
         char* buffer = (char*)malloc(BUFFER_SIZE); //Allocating memory for the buffer
         strcpy(buffer, text); //Copying the text to the buffer
-        int writing = (int)write(self->id_out, buffer, BUFFER_SIZE);
+        int writing = (int)write(self, buffer, BUFFER_SIZE);
 
         if (writing == -1) {
-            printf("Error: Error while writing to the pipe: %d\n", self->id_out);
+            printf("Error: Error while writing to the pipe: %d\n", self);
             return -1;
         }
 
@@ -68,12 +68,12 @@ int write_pipe(Pipe* self, char* text) {
     }
 }
 
-int read_pipe(Pipe* self, char* container) {
-    if (self->id_in > 0) {
-        int reading = (int)read(self->id_in, container, BUFFER_SIZE);
+int read_pipe(int self, char* container) {
+    if (self > 0) {
+        int reading = (int)read(self, container, BUFFER_SIZE);
 
         if (reading == -1) {
-            printf("Error: Error while reading from the pipe: %d\n", self->id_in);
+            printf("Error: Error while reading from the pipe: %d\n", self);
             return -1;
         }
 

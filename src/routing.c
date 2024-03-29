@@ -10,12 +10,13 @@ Pipe *pointer_to_pipe_2;
 
 char* find_request(Pipe pipe_1) {
     char* text = (char*) malloc(BUFFER_SIZE);
-    pipe_read(&pipe_1, text, BUFFER_SIZE);
+    read_txt_doc(&pipe_1, text);
     return text;
 }
 
 /*
  * Return 1 if the request is valid, 0 if not
+ * Verify if the request asked by the client is in the good shape.
  */
 int verify_request_shape(char* request) {
     if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
@@ -26,6 +27,9 @@ int verify_request_shape(char* request) {
     }
 }
 
+/**
+ * Recupere l'instruction dans le pipe client out et écris l'adresse voulu sous la bonne forme dans le pipe server in
+ */
 void ask_for_file() {
     char* request_server = (char*) malloc(5);
     char* request_restaurant = (char*) malloc(5);
@@ -35,8 +39,8 @@ void ask_for_file() {
     char* file_name = (char*) malloc(BUFFER_SIZE);
     int retour = 0;
     do {
-        retour = pipe_read(pointer_to_pipe_1, file_name, BUFFER_SIZE); //Reading the request from the pipe (client to routing)
-    } while (retour == 0);
+        retour = read_pipe(client_pipe->id_out, file_name); //Reading the request from the pipe (client to routing)
+    } while (retour <= 0);
 
     printf("ce que récupère ask_for_file:%s\n", file_name);
 
@@ -51,7 +55,7 @@ void ask_for_file() {
     strcat(request, request_server); strcat(request, "/");
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
-    pipe_write(pointer_to_pipe_2, request); //Sending the request to the data process
+    write_pipe(server_pipe->id_in, request); //Sending the request to the data process
 
 
     free(file_name);
@@ -61,12 +65,13 @@ void ask_for_file() {
     free(request);
 }
 
-void get_back_data_from_data(Pipe pipe_1, Pipe pipe_2) {
+void get_back_data_from_data() {
     char* text = (char*) malloc(BUFFER_SIZE);
-    pipe_read(pointer_to_pipe_2, text, BUFFER_SIZE); //Reading the data from the data process
-    pipe_write(pointer_to_pipe_1, text);
+    read_pipe(server_pipe->id_out, text); //Reading the data from the data process
+    write_pipe(client_pipe->id_in, text);
 }
 
+/**
 int ini_routing() {
     Pipe pipe_1, pipe_2;
     pipe_init(&pipe_1, "pipe_Client_to_Routing", "pipe_Routing_to_Client");
@@ -79,3 +84,4 @@ int ini_routing() {
     pointer_to_pipe_2 = &pipe_2;
     return 0;
 }
+**/
