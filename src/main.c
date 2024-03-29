@@ -6,8 +6,6 @@
 
 #define BUFFER_SIZE 4096
 
-
-
 int main() {
 
     create_pipe("pipe_client_right", "pipe_client_left");

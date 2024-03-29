@@ -5,7 +5,7 @@
 #ifndef RESTAURANT_CLIENT_H
 #define RESTAURANT_CLIENT_H
 
-#include "./pipe_controler.h"
+#include "pipe_controler.h"
 
 typedef struct {
     int code;
