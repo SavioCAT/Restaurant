@@ -1,9 +1,9 @@
 #include "../header/client.h"
 #include "../header/data.h"
 #include "../header/routing.h"
-#include "../header/pipe_controler.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define BUFFER_SIZE 4096
 
@@ -27,9 +27,6 @@ int main() {
             int choix = interface_choix();
             if (choix == 1) {
                 break;
-            }
-            else if (choix == 0) {
-                continue;
             }
         }
 

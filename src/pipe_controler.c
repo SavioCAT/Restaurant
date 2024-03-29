@@ -28,13 +28,6 @@ int create_pipe(char* name_1, char* name_2) {
 }
 
 int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
-    /*
-    if (self->id_in != -1 || self->id_out != -1) {
-        printf("Pipe already open (or other problem) \n");
-        return -2;
-    }
-     */
-
     int open_in = open(name_1, O_RDWR);
     int open_out = open(name_1, O_RDWR);
 
