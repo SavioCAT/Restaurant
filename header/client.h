@@ -14,6 +14,6 @@ Answer interface_menu();
 void interface_start();
 int interface_choix();
 int ini_client();
-int send_data_to_routing(char* request);
+int send_data_to_routing(char* request, Pipe *pipe_pointer);
 
 #endif //RESTAURANT_CLIENT_H
