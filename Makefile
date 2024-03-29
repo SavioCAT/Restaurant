@@ -1,6 +1,5 @@
 Compil:
 	make CompilFile
-	make CompilPipe
 	make CompilCode
 
 CompilFile:
