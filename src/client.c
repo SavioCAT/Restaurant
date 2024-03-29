@@ -76,6 +76,7 @@ Answer interface_menu() {
 
 //Logic part
 
+/**
 int ini_client() {
     Pipe pipe_0;
     create_pipe("pipe_client_in","pipe_client_out")
@@ -85,9 +86,10 @@ int ini_client() {
     pointer_to_pipe_0 = &pipe_0;
     return 0;
 }
+**/
 
-int send_data_to_routing(char* request) {
-    int result = pipe_write(pointer_to_pipe_0, request);
+int send_data_to_routing(char* request, Pipe *pipe_pointer) {
+    int result = write_pipe(pipe_pointer, request);
     if (result < 0) {
         exit(-1);
     }
