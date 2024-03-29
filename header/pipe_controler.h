@@ -6,9 +6,6 @@ typedef struct {
     int id_out;
 }Pipe;
 
-Pipe *client_pipe;
-Pipe *server_pipe;
-
 int create_pipe(char* name_1, char* name_2); // create an object pipe
 
 int initialise_pipe(Pipe* self, char* name_1, char* name_2); // initialise the in and the out of the pipes

@@ -14,22 +14,22 @@ int create_pipe(char* name_1, char* name_2) {
     short pipe_2 = mkfifo(name_2, 0777);
 
     if (pipe_1 == 0 && pipe_2 == 0) {
-        printf("Pipe created successfully");
+        printf("Pipe created successfully \n");
         return 1;
     }
     else if (errno == EEXIST) {
-        printf("Pipe already exist");
+        printf("Pipe already exist \n");
         return 1;
     }
     else {
-        printf("Failed to create pipe");
+        printf("Failed to create pipe \n");
         return -1;
     }
 }
 
 int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
     if (self->id_in != -1 || self->id_out != -1) {
-        printf("Pipe already open (or other problem)");
+        printf("Pipe already open (or other problem) \n");
         return -2;
     }
 
@@ -40,11 +40,11 @@ int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
     self->id_out = open_out;
 
     if (self->id_in > 0 || self->id_out > 0) {
-        printf("Pipe successfully opened");
+        printf("Pipe successfully opened \n");
         return 1;
     }
     else {
-        printf("Problem encountered while opening pipe");
+        printf("Problem encountered while opening pipe \n");
         return -1;
     }
 }
@@ -63,7 +63,7 @@ int write_pipe(int self, char* text) {
         free(buffer);
         return 1;
     } else {
-        printf("Can't write on the pipe");
+        printf("Can't write on the pipe \n");
         return -1;
     }
 }
@@ -80,7 +80,7 @@ int read_pipe(int self, char* container) {
         return 1;
     }
     else {
-        printf("Can't write on the pipe");
+        printf("Can't write on the pipe \n");
         return -1;
     }
 }
