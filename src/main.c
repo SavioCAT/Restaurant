@@ -51,8 +51,9 @@ int main() {
                 }
 
                 ask_for_file();
-
-
+                read_txt_doc();
+                get_back_data_from_data();
+                show_answer_from_routing();
 
                 break;
             }

@@ -74,6 +74,13 @@ Answer interface_menu() {
     }
 }
 
+void show_answer_from_routing() {
+    char* text = (char*) malloc(BUFFER_SIZE);
+    read_pipe(local_client_pipe->id_in, text);
+    printf("%s\n", text);
+    free(text);
+}
+
 void ini_client(Pipe* id_pipe) {
     local_client_pipe = id_pipe;
 }

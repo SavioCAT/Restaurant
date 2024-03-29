@@ -41,8 +41,6 @@ void ask_for_file() {
         retour = read_pipe(local_routing_pipe1->id_out, file_name); //Reading the request from the pipe (client to routing)
     } while (retour <= 0);
 
-    printf("ce que récupère ask_for_file:%s\n", file_name);
-
     strncpy(request_server, file_name, 4);
     request_server[4] = '\0';
     strncpy(request_restaurant, file_name + 5, 4);
@@ -55,11 +53,6 @@ void ask_for_file() {
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
     write_pipe(local_routing_pipe2->id_in, request); //Sending the request to the data process
-
-    free(request_server);
-    free(request_restaurant);
-    free(request_menu);
-    free(request);
 }
 
 void get_back_data_from_data() {
