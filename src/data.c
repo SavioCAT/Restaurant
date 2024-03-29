@@ -16,7 +16,7 @@ char* reading_request_from_pipe() {
 int read_txt_doc() {
     char* name = reading_request_from_pipe(); //Reading the request from the pipe //DEBUG
     FILE* f;
-    printf("%s\n", name); //DEBUG
+    //printf("%s\n", name); //DEBUG
     //printf("Opening the file: %s\n", name); //penser à décommenter pour debug
     f = fopen(name, "r"); //Opening the file in read mode
 
