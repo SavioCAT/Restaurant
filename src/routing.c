@@ -56,8 +56,6 @@ void ask_for_file() {
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
     write_pipe(local_routing_pipe2->id_in, request); //Sending the request to the data process
 
-
-    free(file_name);
     free(request_server);
     free(request_restaurant);
     free(request_menu);
