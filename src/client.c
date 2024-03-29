@@ -24,23 +24,19 @@ void interface_start() {
 
 int interface_choix() {
     int choice;
-
         printf("Welcome to the restaurant menu management application\n");
         printf("Please select an option:\n");
-        printf("1. View the menu\n");
-        printf("2. Close the application\n");
+        printf("Press 1 to View the menu\n");
+        printf("Press any other key to leave the application\n");
         printf("\nYour choice: ");
         scanf("%d", &choice);
         switch (choice) {
             case 1:
                 printf("\nYou choose to look at the menus\n");
                 return 1;
-            case 2:
+            default:
                 printf("Goodbye !\n");
                 exit(0);
-            default:
-                printf("Invalid choice\n");
-                return 0;
         }
 }
 

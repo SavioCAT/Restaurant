@@ -53,6 +53,7 @@ void ask_for_file() {
     strcat(request, request_restaurant); strcat(request, "/");
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
     write_pipe(local_routing_pipe2->id_in, request); //Sending the request to the data process
+
 }
 
 void get_back_data_from_data() {
