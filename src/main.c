@@ -13,7 +13,7 @@ int main() {
 
     create_pipe("pipe_client_right", "pipe_client_left");
     initialise_pipe(client_pipe, "pipe_client_right", "pipe_client_left");
-    create_pipe("pipe_server_right", "pipe_2_left");
+    create_pipe("pipe_server_right", "pipe_server_left");
     initialise_pipe(server_pipe, "pipe_server_right", "pipe_server_left");
 
     ini_client(client_pipe);
