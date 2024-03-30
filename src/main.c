@@ -7,18 +7,20 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 4096
+#define STRING_SIZE 256
+#define PID_SIZE 16
 
 int main() {
     Pipe* client_pipe = malloc(sizeof(Pipe));
     Pipe* server_pipe = malloc(sizeof(Pipe));
     pid_t pid_process = getpid();
-    char pid_string[BUFFER_SIZE];
+    char pid_string[PID_SIZE];
     snprintf(pid_string, sizeof(pid_string), "%d", pid_process);
 
-    char name_pipe_client_right[BUFFER_SIZE + 256];
-    char name_pipe_client_left[BUFFER_SIZE + 256];
-    char name_pipe_server_right[BUFFER_SIZE + 256];
-    char name_pipe_server_left[BUFFER_SIZE + 256];
+    char name_pipe_client_right[STRING_SIZE];
+    char name_pipe_client_left[STRING_SIZE];
+    char name_pipe_server_right[STRING_SIZE];
+    char name_pipe_server_left[STRING_SIZE];
 
     snprintf(name_pipe_client_right, sizeof(name_pipe_client_right), "pipe_client_right%s", pid_string);
     snprintf(name_pipe_client_left, sizeof(name_pipe_client_left), "pipe_client_left%s", pid_string);

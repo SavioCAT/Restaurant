@@ -11,7 +11,7 @@ void interface_start();
 int interface_choix();
 Answer interface_menu();
 
-Pipe* local_client_pipe;
+static Pipe* local_client_pipe;
 
 //Graphic interface part
 void interface_start() {

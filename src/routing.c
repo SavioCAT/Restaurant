@@ -4,8 +4,8 @@
 #include "../header/data.h"
 
 #define BUFFER_SIZE 4096
-Pipe* local_routing_pipe1;
-Pipe* local_routing_pipe2;
+static Pipe* local_routing_pipe1;
+static Pipe* local_routing_pipe2;
 
 char* find_request(Pipe pipe_1) {
     char* text = (char*) malloc(BUFFER_SIZE);
