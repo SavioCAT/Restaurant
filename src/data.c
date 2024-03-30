@@ -5,7 +5,7 @@
 
 #define BUFFER_SIZE 4096
 
-Pipe* local_server_pipe;
+static Pipe* local_server_pipe;
 
 char* reading_request_from_pipe() {
     char* text = (char*) malloc(BUFFER_SIZE); //Allocating memory for the text
