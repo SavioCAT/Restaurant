@@ -4,8 +4,6 @@ Compil:
 
 CompilFile:
 	rm -rf ./bin
-	rm -rf ./File_pipe
-	mkdir File_pipe
 	mkdir bin
 
 CompilPipe:
