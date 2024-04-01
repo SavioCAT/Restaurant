@@ -29,7 +29,7 @@ int verify_request_shape(char* request) {
 /**
  * Recupere l'instruction dans le pipe client out et écris l'adresse voulu sous la bonne forme dans le pipe server in
  */
-void ask_for_file() {
+int ask_for_file() {
     char* request_server = (char*) malloc(5);
     char* request_restaurant = (char*) malloc(5);
     char* request_menu  = (char*) malloc(5);
@@ -54,6 +54,7 @@ void ask_for_file() {
     strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
     write_pipe(local_routing_pipe2->id_in, request); //Sending the request to the data process
 
+    return retour;
 }
 
 void get_back_data_from_data() {
@@ -65,4 +66,16 @@ void get_back_data_from_data() {
 void ini_routing(Pipe* id_pipe1, Pipe* id_pipe2) {
     local_routing_pipe1 = id_pipe1;
     local_routing_pipe2 = id_pipe2;
+}
+
+
+// To use in multithreading
+void running_routing() {
+    int back = -1;
+
+    while (back == -1) { // wait for a request, keep looking for the client request.
+        back = ask_for_file();
+    }
+    read_txt_doc(); // Order for the server to find the file
+    get_back_data_from_data(); // send back the good file to the good pipe
 }

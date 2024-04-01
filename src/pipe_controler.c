@@ -75,7 +75,7 @@ int read_pipe(int self, char* container) {
         return 1;
     }
     else {
-        printf("Can't write on the pipe \n");
+        //printf("Can't read the pipe \n");
         return -1;
     }
 }
