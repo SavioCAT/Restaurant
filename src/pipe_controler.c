@@ -68,7 +68,7 @@ int read_pipe(int self, char* container) {
         int reading = (int)read(self, container, BUFFER_SIZE);
 
         if (reading == -1) {
-            printf("Error: Error while reading from the pipe: %d\n", self);
+            //printf("Error: Error while reading from the pipe: %d\n", self); //DEBUG
             return -1;
         }
 
