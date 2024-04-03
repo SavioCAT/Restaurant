@@ -7,6 +7,16 @@
 #define BUFFER_SIZE 4096
 #define STRING_SIZE 256
 
+static char container[STRING_SIZE];
+
+//
+//
+//
+// WIP
+//
+//
+//
+
 int main(int argc, char *argv[]) {
     if (argc > 3) {
         printf("Too much args \0");
@@ -41,7 +51,6 @@ int main(int argc, char *argv[]) {
         while(1) {
             int result = -1;
             int i = 0;
-            char container[STRING_SIZE];
             char pipe_name[STRING_SIZE];
             memset(chaine, 0, sizeof(chaine));
 
@@ -50,7 +59,11 @@ int main(int argc, char *argv[]) {
                 i = 0;
             }
             i = i + 1;
-            result = read_pipe()
+            result = read_pipe(pipe_name, container);
+            if (result == 1) {
+                break;
+            }
         }
+        write_pipe(, container);
     }
 }
