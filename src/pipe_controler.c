@@ -6,8 +6,15 @@
 #include <sys/errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 #define BUFFER_SIZE 4096
+
+int is_pipe_empty(int pipe_id) {
+    int count;
+    ioctl(pipe_id, FIONREAD, &count);
+    return count == 0;
+}
 
 int create_pipe(char* name_1, char* name_2) {
     short pipe_1 = mkfifo(name_1, 0777);

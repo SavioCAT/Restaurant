@@ -14,5 +14,7 @@ int write_pipe(int self, char* text); // write on the pipe out
 
 int read_pipe(int self, char* container); // write the pipe in
 
+int is_pipe_empty(int pipe_id); // return 1 if the pipe is empty, 0 if not.
+
 
 #endif //LIBRAIRIE_GESTION_PIPE_C_PIPE_CONTROLER_H

@@ -1,13 +1,23 @@
-#include "../header/client.h"
-#include "../header/routing.h"
+#include "../header/pipe_controler.h"
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <sys/errno.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #define BUFFER_SIZE 4096
 #define STRING_SIZE 256
 
 static char container[STRING_SIZE];
+static Pipe instruction_pipe;
+static int open_pipe1;
+static int open_pipe2;
+static int nb_max_client;
+static int nb_max_server;
 
 //
 //
@@ -26,8 +36,8 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     else {
-        int nb_max_client = atoi(argv[1]);
-        int nb_max_server = atoi(argv[2]);
+        nb_max_client = atoi(argv[1]);
+        nb_max_server = atoi(argv[2]);
 
         for (int i = 0; i < nb_max_client; i++) {
             char name_pipe_client_right[STRING_SIZE];
@@ -45,14 +55,28 @@ int main(int argc, char *argv[]) {
 
             create_pipe(name_pipe_server_right, name_pipe_server_left);
         }
+        create_pipe("nb_max_client", "nb_max_server");
+        open_pipe1 = open("nb_max_client", O_RDWR);
+        open_pipe2 = open("nb_max_server", O_RDWR);
     }
 
     while(1) {
         while(1) {
+            if (is_pipe_empty(open_pipe1) == 1) {
+                char* text = malloc(sizeof(char) * 32);
+                snprintf(text, sizeof(text), "%d", nb_max_client);
+                write_pipe(open_pipe1, text);
+                free(text);
+            }
+            if (is_pipe_empty(open_pipe2) == 1) {
+                char* text = malloc(sizeof(char) * 32);
+                snprintf(text, sizeof(text), "%d", nb_max_server);
+                write_pipe(open_pipe2, text);
+                free(text);
+            }
             int result = -1;
             int i = 0;
             char pipe_name[STRING_SIZE];
-            memset(chaine, 0, sizeof(chaine));
 
             snprintf(pipe_name, sizeof(pipe_name), "pipe_client_right%d", i);
             if (i == nb_max_client) {
@@ -64,6 +88,6 @@ int main(int argc, char *argv[]) {
                 break;
             }
         }
-        write_pipe(, container);
+        //write_pipe(, container);
     }
 }

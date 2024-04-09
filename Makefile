@@ -14,4 +14,4 @@ CompilPipe:
 	mv ./pipe* ./File_pipe/
 
 CompilCode:
-	gcc ./src/*.c -o ./bin/Application.out -Wall
+	gcc main_routing.c pipe_controler.c -o main_routing.out
