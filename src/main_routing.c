@@ -19,20 +19,21 @@ static int open_pipe2;
 static int nb_max_client;
 static int nb_max_server;
 
-//
-//
-//
-// WIP
-//
-//
-//
-
 int main(int argc, char *argv[]) {
     if (argc > 3) {
-        printf("Too much args \0");
+        printf("Too much args \n");
         exit(1);
-    } else if (argc < 3) {
-        printf("Not enought args \0");
+    }
+    else if (argc < 3) {
+        printf("Not enought args \n");
+        exit(1);
+    }
+    else if (atoi(argv[1]) > 10 || atoi(argv[1]) <= 0) {
+        printf("Too much or not enought client, should be between 1 and 10 \n");
+        exit(1);
+    }
+    else if (atoi(argv[2]) > 10 || atoi(argv[2]) <= 0) {
+        printf("Too much or not enought server, should be between 1 and 10 \n");
         exit(1);
     }
     else {
@@ -62,13 +63,13 @@ int main(int argc, char *argv[]) {
 
     while(1) {
         while(1) {
-            if (is_pipe_empty(open_pipe1) == 1) {
+            if (is_pipe_empty(open_pipe1)) {
                 char* text = malloc(sizeof(char) * 32);
                 snprintf(text, sizeof(text), "%d", nb_max_client);
                 write_pipe(open_pipe1, text);
                 free(text);
             }
-            if (is_pipe_empty(open_pipe2) == 1) {
+            if (is_pipe_empty(open_pipe2)) {
                 char* text = malloc(sizeof(char) * 32);
                 snprintf(text, sizeof(text), "%d", nb_max_server);
                 write_pipe(open_pipe2, text);
@@ -79,10 +80,10 @@ int main(int argc, char *argv[]) {
             char pipe_name[STRING_SIZE];
 
             snprintf(pipe_name, sizeof(pipe_name), "pipe_client_right%d", i);
-            if (i == nb_max_client) {
+            i = i + 1;
+            if (i == nb_max_client - 1) {
                 i = 0;
             }
-            i = i + 1;
             result = read_pipe(pipe_name, container);
             if (result == 1) {
                 break;

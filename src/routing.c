@@ -13,18 +13,7 @@ char* find_request(Pipe pipe_1) {
     return text;
 }
 
-/*
- * Return 1 if the request is valid, 0 if not
- * Verify if the request asked by the client is in the good shape.
- */
-int verify_request_shape(char* request) {
-    if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
+
 
 /**
  * Recupere l'instruction dans le pipe client out et écris l'adresse voulu sous la bonne forme dans le pipe server in

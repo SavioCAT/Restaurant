@@ -1,19 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <string.h>
-#include "../header/routing.h"
-#include "../header/data.h"
-#include "../header/client.h"
+#include <sys/errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 #include "../header/pipe_controler.h"
+#include "../header/client.h"
+
 #define BUFFER_SIZE 4096
+#define STRING_SIZE 256
+#define PID_SIZE 16
 
 void interface_start();
 int interface_choix();
 Answer interface_menu();
 
-static Pipe* local_client_pipe;
+static Pipe *local_client_pipe;
+static Pipe pipe_client;
+static int nb_max_client;
+static int nb_server;
 
-//Graphic interface part
+int verify_request_shape(char* request) {
+    if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
 void interface_start() {
     printf("___________________________\n");
     printf("|     Project EL-3032     |\n");
@@ -90,4 +107,56 @@ int send_data_to_routing(char* request, Pipe *pipe_pointer) {
     else {
         return 1;
     }
+}
+
+int main(int argc, char *argv[]) {
+
+    int open_1 = open("./nb_max_client", O_RDWR);
+    int open_2 = open("./nb_max_server", O_RDWR);
+    char temp_nb_client[STRING_SIZE];
+    char temp_nb_server[STRING_SIZE];
+    read(open_1, temp_nb_client, 4);
+    read(open_1, temp_nb_server, 4);
+    nb_max_client = atoi(temp_nb_client);
+    nb_server = atoi(temp_nb_server);
+
+
+    printf("test %d %d",nb_max_client, nb_server);
+
+    /**
+    while(1) {
+        while (1) {
+            int choix = interface_choix();
+            if (choix == 1) {
+                break;
+            }
+        }
+
+        while(1) {
+            Answer answer = interface_menu();
+
+            if (answer.code == 0) {
+                break;
+            }
+            else if (answer.code == -1) {
+                printf("Invalid choice\n");
+                continue;
+            }
+            else {
+                int result0 = send_data_to_routing(answer.answer, client_pipe);
+                if (result0 == 0) {
+                    printf("Error while sending the request to the routing process\n");
+                    break;
+                }
+
+                ask_for_file();
+                read_txt_doc();
+                get_back_data_from_data();
+                show_answer_from_routing();
+
+                break;
+            }
+        }
+    }
+     **/
 }
