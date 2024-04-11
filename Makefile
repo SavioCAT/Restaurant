@@ -1,6 +1,7 @@
 Compil:
 	make CompilFile
 	make CompilCode
+	touch ./bin/value.txt
 
 CompilFile:
 	rm -rf ./bin

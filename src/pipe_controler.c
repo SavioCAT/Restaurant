@@ -79,7 +79,7 @@ int read_pipe(int self, char* container) {
             return -1;
         }
 
-        return 1;
+        return reading;
     }
     else {
         //printf("Can't read the pipe \n");
