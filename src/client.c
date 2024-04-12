@@ -1,26 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
 #include <string.h>
-#include <sys/errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include "../header/pipe_controler.h"
 #include "../header/client.h"
 
 #define BUFFER_SIZE 4096
-#define STRING_SIZE 256
-#define PID_SIZE 16
 
-void interface_start();
-int interface_choix();
-Answer interface_menu();
-
-static Pipe *local_client_pipe;
-static Pipe pipe_client;
+static Pipe local_client_pipe;
 static int nb_max_client;
 static int nb_server;
+static char name_pipe_right[64];
+static char name_pipe_left[64];
+static int result;
 
 int verify_request_shape(char* request) {
     if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
@@ -89,18 +80,13 @@ Answer interface_menu() {
 
 void show_answer_from_routing() {
     char* text = (char*) malloc(BUFFER_SIZE);
-    read_pipe(local_client_pipe->id_in, text);
+    read_pipe(local_client_pipe.id_in, text);
     printf("%s\n", text);
     free(text);
 }
 
-void ini_client(Pipe* id_pipe) {
-    local_client_pipe = id_pipe;
-}
-
-
 int send_data_to_routing(char* request, Pipe *pipe_pointer) {
-    int result = write_pipe(local_client_pipe->id_out, request);
+    int result = write_pipe(local_client_pipe.id_out, request);
     if (result < 0) {
         exit(-1);
     }
@@ -111,52 +97,54 @@ int send_data_to_routing(char* request, Pipe *pipe_pointer) {
 
 int main(int argc, char *argv[]) {
 
-    int open_1 = open("./nb_max_client", O_RDWR);
-    int open_2 = open("./nb_max_server", O_RDWR);
-    char temp_nb_client[STRING_SIZE];
-    char temp_nb_server[STRING_SIZE];
-    read(open_1, temp_nb_client, 4);
-    read(open_1, temp_nb_server, 4);
-    nb_max_client = atoi(temp_nb_client);
-    nb_server = atoi(temp_nb_server);
-
-
-    printf("test %d %d",nb_max_client, nb_server);
+    /**
+     * This block is usefull to know the max of client and server.
+     */
+    FILE * file = fopen("value.txt", "r");
+    if (file == NULL) {
+        printf("Failed to open value.txt\n");
+        exit(1);
+    }
+    char line[BUFFER_SIZE];
+    fgets(line, sizeof(line), file);
+    nb_max_client = atoi(line);
+    fgets(line, sizeof(line), file);
+    nb_server = atoi(line);
+    fclose(file);
+    result = 0;
 
     /**
-    while(1) {
-        while (1) {
-            int choix = interface_choix();
-            if (choix == 1) {
-                break;
-            }
-        }
+     * This block is usefull to search a free pipe to exchange instruction with routing process.
+     */
+    for (int i = 0; i < nb_max_client; i++) {
+        snprintf(name_pipe_right, sizeof(name_pipe_right), "pipe_client_right%d", i);
+        snprintf(name_pipe_left, sizeof(name_pipe_left), "pipe_client_left%d", i);
 
-        while(1) {
-            Answer answer = interface_menu();
-
-            if (answer.code == 0) {
-                break;
-            }
-            else if (answer.code == -1) {
-                printf("Invalid choice\n");
-                continue;
-            }
-            else {
-                int result0 = send_data_to_routing(answer.answer, client_pipe);
-                if (result0 == 0) {
-                    printf("Error while sending the request to the routing process\n");
-                    break;
-                }
-
-                ask_for_file();
-                read_txt_doc();
-                get_back_data_from_data();
-                show_answer_from_routing();
-
-                break;
-            }
+        result = initialise_pipe(&local_client_pipe, name_pipe_right, name_pipe_left);
+        if (result > 0) {
+            char old_name_right[64];
+            char old_name_left[64];
+            char new_name_right[64];
+            char new_name_left[64];
+            snprintf(old_name_right, sizeof(old_name_right), "pipe_client_right%d", i);
+            snprintf(old_name_left, sizeof(old_name_left), "pipe_client_left%d", i);
+            snprintf(new_name_right, sizeof(new_name_right), "used_pipe_client_right%d", i);
+            snprintf(new_name_left, sizeof(new_name_left), "used_pipe_client_left%d", i);
+            rename(old_name_right, new_name_right);
+            rename(old_name_left, new_name_left);
+            break;
         }
     }
-     **/
+    /**
+     * If we find a free pipe we start to exchange data with routing. Else we're ending the program.
+     */
+    if (result > 0) {
+        interface_start();
+        while(1) {
+
+        }
+    } else {
+        printf("No free pipe found, ending the program");
+        exit(0);
+    }
 }

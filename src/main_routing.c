@@ -1,8 +1,8 @@
 #include "../header/pipe_controler.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 
 #define BUFFER_SIZE 4096
 #define STRING_SIZE 256
@@ -162,6 +162,7 @@ int main(int argc, char *argv[]) {
     }
 
     while(1) {
+        sleep(1);
         if (atoi(argv[1]) == 1) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
                 char *container = malloc(sizeof(char) * 64);
