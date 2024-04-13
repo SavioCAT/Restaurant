@@ -12,6 +12,7 @@ static int nb_server;
 static char name_pipe_right[64];
 static char name_pipe_left[64];
 static int result;
+static int id_pipe;
 
 int verify_request_shape(char* request) {
     if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
@@ -43,6 +44,16 @@ int interface_choix() {
                 printf("\nYou choose to look at the menus\n");
                 return 1;
             default:
+                char old_name_right[64];
+                char old_name_left[64];
+                char new_name_right[64];
+                char new_name_left[64];
+                snprintf(old_name_right, sizeof(old_name_right), "used_pipe_client_right%d", id_pipe);
+                snprintf(old_name_left, sizeof(old_name_left), "used_pipe_client_left%d", id_pipe);
+                snprintf(new_name_right, sizeof(new_name_right), "pipe_client_right%d", id_pipe);
+                snprintf(new_name_left, sizeof(new_name_left), "pipe_client_left%d", id_pipe);
+                rename(old_name_right, new_name_right);
+                rename(old_name_left, new_name_left);
                 printf("Goodbye !\n");
                 exit(0);
         }
@@ -132,19 +143,30 @@ int main(int argc, char *argv[]) {
             snprintf(new_name_left, sizeof(new_name_left), "used_pipe_client_left%d", i);
             rename(old_name_right, new_name_right);
             rename(old_name_left, new_name_left);
+            id_pipe = i;
             break;
         }
     }
     /**
      * If we find a free pipe we start to exchange data with routing. Else we're ending the program.
      */
+    Answer ans;
     if (result > 0) {
         interface_start();
         while(1) {
+            ans.code = -1;
+            interface_choix();
+            while (ans.code == -1) {
+                ans = interface_menu();
+            }
+            if (ans.code == 0) {
+                continue;
+            }
+            send_data_to_routing(ans.answer, &local_client_pipe);
 
         }
     } else {
-        printf("No free pipe found, ending the program");
+        printf("No free pipe found, ending the program\n");
         exit(0);
     }
 }
