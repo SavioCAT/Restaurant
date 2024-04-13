@@ -4,16 +4,20 @@
 #include <string.h>
 #include <unistd.h>
 
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 1024
 #define STRING_SIZE 256
 
 
-static Pipe pipe_client_0, pipe_client_1, pipe_client_2, pipe_client_3, pipe_client_4, pipe_client_5, pipe_client_6, pipe_client_7, pipe_client_8, pipe_client_9;
+static Pipe pipe_client_0, pipe_client_1, pipe_client_2, pipe_client_3, pipe_client_4;
 static Pipe pipe_server_0, pipe_server_1, pipe_server_2;
+static int nb_client;
+static int nb_server;
 
 
 int main(int argc, char *argv[]) {
     char *container = malloc(sizeof(char) * 256);
+    nb_client = atoi(argv[1]);
+    nb_server = atoi(argv[2]);
     if (argc > 3) {
         printf("Too much args \n");
         exit(1);
@@ -99,51 +103,6 @@ int main(int argc, char *argv[]) {
             initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
             initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
             initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-        } else if (atoi(argv[1]) == 6) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
-            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
-            initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
-            initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-            initialise_pipe(&pipe_client_5, "pipe_client_right5", "pipe_client_left5");
-        } else if (atoi(argv[1]) == 7) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
-            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
-            initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
-            initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-            initialise_pipe(&pipe_client_5, "pipe_client_right5", "pipe_client_left5");
-            initialise_pipe(&pipe_client_6, "pipe_client_right6", "pipe_client_left6");
-        } else if (atoi(argv[1]) == 8) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
-            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
-            initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
-            initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-            initialise_pipe(&pipe_client_5, "pipe_client_right5", "pipe_client_left5");
-            initialise_pipe(&pipe_client_6, "pipe_client_right6", "pipe_client_left6");
-            initialise_pipe(&pipe_client_0, "pipe_client_right7", "pipe_client_left7");
-        } else if (atoi(argv[1]) == 9) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
-            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
-            initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
-            initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-            initialise_pipe(&pipe_client_5, "pipe_client_right5", "pipe_client_left5");
-            initialise_pipe(&pipe_client_6, "pipe_client_right6", "pipe_client_left6");
-            initialise_pipe(&pipe_client_7, "pipe_client_right7", "pipe_client_left7");
-            initialise_pipe(&pipe_client_8, "pipe_client_right8", "pipe_client_left8");
-        } else if (atoi(argv[1]) == 10) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
-            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_2, "pipe_client_right2", "pipe_client_left2");
-            initialise_pipe(&pipe_client_3, "pipe_client_right3", "pipe_client_left3");
-            initialise_pipe(&pipe_client_4, "pipe_client_right4", "pipe_client_left4");
-            initialise_pipe(&pipe_client_5, "pipe_client_right5", "pipe_client_left5");
-            initialise_pipe(&pipe_client_6, "pipe_client_right6", "pipe_client_left6");
-            initialise_pipe(&pipe_client_7, "pipe_client_right7", "pipe_client_left7");
-            initialise_pipe(&pipe_client_8, "pipe_client_right8", "pipe_client_left8");
-            initialise_pipe(&pipe_client_9, "pipe_client_right9", "pipe_client_left9");
         }
 
         /**
@@ -163,9 +122,9 @@ int main(int argc, char *argv[]) {
 
     while(1) {
         sleep(1);
-        if (atoi(argv[1]) == 1) {
+        if (nb_client == 1) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_0.id_out, container);
                 if (reading <= 0) {
@@ -173,34 +132,28 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             }
-        } else if (atoi(argv[1]) == 2) {
+        } else if (nb_client == 2) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_0.id_out, container);
                 if (reading <= 0) {
@@ -208,32 +161,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_1.id_out, container);
                 if (reading <= 0) {
@@ -241,34 +188,28 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             }
-        } else if (atoi(argv[1]) == 3) {
+        } else if (nb_client == 3) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_0.id_out, container);
                 if (reading <= 0) {
@@ -276,32 +217,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_1.id_out, container);
                 if (reading <= 0) {
@@ -309,32 +244,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_2.id_out, container);
                 if (reading <= 0) {
@@ -342,34 +271,28 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             }
-        } else if (atoi(argv[1]) == 4) {
+        } else if (nb_client == 4) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_0.id_out, container);
                 if (reading <= 0) {
@@ -377,32 +300,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_1.id_out, container);
                 if (reading <= 0) {
@@ -410,32 +327,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_2.id_out, container);
                 if (reading <= 0) {
@@ -443,32 +354,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_3.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_3.id_out, container);
                 if (reading <= 0) {
@@ -476,34 +381,28 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             }
-        } else if (atoi(argv[1]) == 5) {
+        } else if (nb_client == 5) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_0.id_out, container);
                 if (reading <= 0) {
@@ -511,32 +410,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_0.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_1.id_out, container);
                 if (reading <= 0) {
@@ -544,32 +437,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_1.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_2.id_out, container);
                 if (reading <= 0) {
@@ -577,32 +464,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_2.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_3.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_3.id_out, container);
                 if (reading <= 0) {
@@ -610,32 +491,26 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_3.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
             } else if (is_pipe_empty(pipe_client_4.id_out) == 0) {
-                char *container = malloc(sizeof(char) * 64);
+                char container[BUFFER_SIZE];
                 char address_server[4];
                 int reading = read_pipe(pipe_client_4.id_out, container);
                 if (reading <= 0) {
@@ -643,27 +518,21 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
-                if (atoi(address_server) == 1 && atoi(argv[2]) >= 1) {
+                if (atoi(address_server) == 1 && nb_server >= 1) {
                     write_pipe(pipe_server_0.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_0.id_out, container_data);
                     write_pipe(pipe_client_4.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 2 && atoi(argv[2]) >= 2) {
+                } else if (atoi(address_server) == 2 && nb_server >= 2) {
                     write_pipe(pipe_server_1.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_1.id_out, container_data);
                     write_pipe(pipe_client_4.id_in, container_data);
-                    free(container);
-                    free(container_data);
-                } else if (atoi(address_server) == 3 && atoi(argv[2]) >= 3) {
+                } else if (atoi(address_server) == 3 && nb_server >= 3) {
                     write_pipe(pipe_server_2.id_in, container);
-                    char *container_data = malloc(sizeof(char) * BUFFER_SIZE);
+                    char container_data[BUFFER_SIZE];
                     read_pipe(pipe_server_2.id_out, container_data);
                     write_pipe(pipe_client_4.id_in, container_data);
-                    free(container);
-                    free(container_data);
                 } else {
                     printf("Server unreachable !");
                 }
