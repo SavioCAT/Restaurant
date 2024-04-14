@@ -15,7 +15,6 @@ static int nb_server;
 
 
 int main(int argc, char *argv[]) {
-    char *container = malloc(sizeof(char) * 256);
     nb_client = atoi(argv[1]);
     nb_server = atoi(argv[2]);
     if (argc > 3) {
@@ -68,20 +67,8 @@ int main(int argc, char *argv[]) {
             create_pipe(name_pipe_server_right, name_pipe_server_left);
         }
 
-        for (int i = 0; i < atoi(argv[1]); i++) {
-
-        }
-        for (int i = 0; i < atoi(argv[2]); i++) {
-            char name_pipe_server_right[STRING_SIZE];
-            char name_pipe_server_left[STRING_SIZE];
-            snprintf(name_pipe_server_right, sizeof(name_pipe_server_right), "pipe_server_right%d", i);
-            snprintf(name_pipe_server_left, sizeof(name_pipe_server_left), "pipe_server_left%d", i);
-
-            create_pipe(name_pipe_server_right, name_pipe_server_left);
-        }
-
         /**
-         * hell block to initiliase all the pipe struct for the client.
+         * block to initiliase all the pipe struct for the client.
          */
         if (atoi(argv[1]) == 1) {
             initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
@@ -121,7 +108,7 @@ int main(int argc, char *argv[]) {
     }
 
     while(1) {
-        sleep(1);
+        usleep(1500000);
         if (nb_client == 1) {
             if (is_pipe_empty(pipe_client_0.id_out) == 0) {
                 char container[BUFFER_SIZE];
