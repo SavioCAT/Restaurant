@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include "../header/pipe_controler.h"
 #include "../header/client.h"
 
@@ -13,6 +14,23 @@ static char name_pipe_right[64];
 static char name_pipe_left[64];
 static int result;
 static int id_pipe;
+
+void ending_process(int signal) {
+    if (signal == SIGINT) {
+        printf("\nCTRL+C pressed, ending the process.\n");
+        char old_name_right[64];
+        char old_name_left[64];
+        char new_name_right[64];
+        char new_name_left[64];
+        snprintf(old_name_right, sizeof(old_name_right), "used_pipe_client_right%d", id_pipe);
+        snprintf(old_name_left, sizeof(old_name_left), "used_pipe_client_left%d", id_pipe);
+        snprintf(new_name_right, sizeof(new_name_right), "pipe_client_right%d", id_pipe);
+        snprintf(new_name_left, sizeof(new_name_left), "pipe_client_left%d", id_pipe);
+        rename(old_name_right, new_name_right);
+        rename(old_name_left, new_name_left);
+        exit(0);
+    }
+}
 
 int verify_request_shape(char* request) {
     if (strlen(request) == 14 && request[4] == '|' && request[9] == '|') {
@@ -107,7 +125,7 @@ int send_data_to_routing(char* request, Pipe *pipe_pointer) {
 }
 
 int main(int argc, char *argv[]) {
-
+    signal(SIGINT, ending_process); // We're handling the case where the client press ctrl+c.
     /**
      * This block is usefull to know the max of client and server.
      */
@@ -131,7 +149,7 @@ int main(int argc, char *argv[]) {
         snprintf(name_pipe_right, sizeof(name_pipe_right), "pipe_client_right%d", i);
         snprintf(name_pipe_left, sizeof(name_pipe_left), "pipe_client_left%d", i);
 
-        result = initialise_pipe(&local_client_pipe, name_pipe_right, name_pipe_left);
+        result = initialise_pipe(&local_client_pipe, name_pipe_left, name_pipe_right);
         if (result > 0) {
             char old_name_right[64];
             char old_name_left[64];
@@ -163,7 +181,7 @@ int main(int argc, char *argv[]) {
                 continue;
             }
             send_data_to_routing(ans.answer, &local_client_pipe);
-
+            show_answer_from_routing();
         }
     } else {
         printf("No free pipe found, ending the program\n");

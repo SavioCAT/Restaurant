@@ -68,13 +68,13 @@ int main(int argc, char *argv[]) {
         }
 
         /**
-         * block to initiliase all the pipe struct for the client.
+         * block to initialise all the pipe struct for the client.
          */
         if (atoi(argv[1]) == 1) {
             initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
         } else if (atoi(argv[1]) == 2) {
-            initialise_pipe(&pipe_client_0, "pipe_client_right1", "pipe_client_left1");
-            initialise_pipe(&pipe_client_1, "pipe_client_right0", "pipe_client_left0");
+            initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
+            initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
         } else if (atoi(argv[1]) == 3) {
             initialise_pipe(&pipe_client_0, "pipe_client_right0", "pipe_client_left0");
             initialise_pipe(&pipe_client_1, "pipe_client_right1", "pipe_client_left1");
@@ -96,432 +96,447 @@ int main(int argc, char *argv[]) {
          * Same but for the server.
          */
         if (atoi(argv[2]) == 1) {
-            initialise_pipe(&pipe_server_0, "pipe_server_right0", "pipe_server_left0");
+            initialise_pipe(&pipe_server_0, "pipe_server_left0", "pipe_server_right0");
         } else if (atoi(argv[2]) == 2) {
-            initialise_pipe(&pipe_server_0, "pipe_server_right1", "pipe_server_left1");
-            initialise_pipe(&pipe_server_1, "pipe_server_right0", "pipe_server_left0");
+            initialise_pipe(&pipe_server_0, "pipe_server_left0", "pipe_server_right0");
+            initialise_pipe(&pipe_server_1, "pipe_server_left1", "pipe_server_right1");
         } else if (atoi(argv[2]) == 3) {
-            initialise_pipe(&pipe_server_0, "pipe_server_right0", "pipe_server_left0");
-            initialise_pipe(&pipe_server_1, "pipe_server_right1", "pipe_server_left1");
-            initialise_pipe(&pipe_server_2, "pipe_server_right2", "pipe_server_left2");
+            initialise_pipe(&pipe_server_0, "pipe_server_left0", "pipe_server_right0");
+            initialise_pipe(&pipe_server_1, "pipe_server_left1", "pipe_server_right1");
+            initialise_pipe(&pipe_server_2, "pipe_server_left2", "pipe_server_right2");
         }
     }
 
     while(1) {
-        usleep(1500000);
+        usleep(500000);
         if (nb_client == 1) {
-            if (is_pipe_empty(pipe_client_0.id_out) == 0) {
+            if (is_pipe_empty(pipe_client_0.id_in) == 0) {
+                printf("data received from client 0\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_0.id_out, container);
+                int reading = read_pipe(pipe_client_0.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
             }
         } else if (nb_client == 2) {
-            if (is_pipe_empty(pipe_client_0.id_out) == 0) {
+            if (is_pipe_empty(pipe_client_0.id_in) == 0) {
+                printf("data received from client 0\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_0.id_out, container);
+                int reading = read_pipe(pipe_client_0.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_1.id_in) == 0) {
+                printf("data received from client 1\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_1.id_out, container);
+                int reading = read_pipe(pipe_client_1.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
             }
         } else if (nb_client == 3) {
-            if (is_pipe_empty(pipe_client_0.id_out) == 0) {
+            if (is_pipe_empty(pipe_client_0.id_in) == 0) {
+                printf("data received from client 0\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_0.id_out, container);
+                int reading = read_pipe(pipe_client_0.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_1.id_in) == 0) {
+                printf("data received from client 1\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_1.id_out, container);
+                int reading = read_pipe(pipe_client_1.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_2.id_in) == 0) {
+                printf("data received from client 2\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_2.id_out, container);
+                int reading = read_pipe(pipe_client_2.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
             }
         } else if (nb_client == 4) {
-            if (is_pipe_empty(pipe_client_0.id_out) == 0) {
+            if (is_pipe_empty(pipe_client_0.id_in) == 0) {
+                printf("data received from client 0\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_0.id_out, container);
+                int reading = read_pipe(pipe_client_0.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_1.id_in) == 0) {
+                printf("data received from client 1\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_1.id_out, container);
+                int reading = read_pipe(pipe_client_1.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_2.id_in) == 0) {
+                printf("data received from client 2\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_2.id_out, container);
+                int reading = read_pipe(pipe_client_2.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_3.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_3.id_in) == 0) {
+                printf("data received from client 3\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_3.id_out, container);
+                int reading = read_pipe(pipe_client_3.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
             }
         } else if (nb_client == 5) {
-            if (is_pipe_empty(pipe_client_0.id_out) == 0) {
+            if (is_pipe_empty(pipe_client_0.id_in) == 0) {
+                printf("data received from client 0\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_0.id_out, container);
+                int reading = read_pipe(pipe_client_0.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_0.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_0.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_1.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_1.id_in) == 0) {
+                printf("data received from client 1\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_1.id_out, container);
+                int reading = read_pipe(pipe_client_1.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_1.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_1.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_2.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_2.id_in) == 0) {
+                printf("data received from client 2\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_2.id_out, container);
+                int reading = read_pipe(pipe_client_2.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_2.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_2.id_out, container_data);
                 } else {
                     printf("Server unreachable !");
                 }
-            } else if (is_pipe_empty(pipe_client_3.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_3.id_in) == 0) {
+                printf("data received from client 3\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_3.id_out, container);
+                int reading = read_pipe(pipe_client_3.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_3.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_3.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
-            } else if (is_pipe_empty(pipe_client_4.id_out) == 0) {
+            } else if (is_pipe_empty(pipe_client_4.id_in) == 0) {
+                printf("data received from client 4\n");
                 char container[BUFFER_SIZE];
                 char address_server[4];
-                int reading = read_pipe(pipe_client_4.id_out, container);
+                int reading = read_pipe(pipe_client_4.id_in, container);
                 if (reading <= 0) {
-                    printf("Failed to read the pipe");
+                    printf("Failed to read the pipe\n");
                     exit(1);
                 }
                 strncpy(address_server, container, 4);
                 if (atoi(address_server) == 1 && nb_server >= 1) {
-                    write_pipe(pipe_server_0.id_in, container);
+                    write_pipe(pipe_server_0.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_0.id_out, container_data);
-                    write_pipe(pipe_client_4.id_in, container_data);
+                    read_pipe(pipe_server_0.id_in, container_data);
+                    write_pipe(pipe_client_4.id_out, container_data);
                 } else if (atoi(address_server) == 2 && nb_server >= 2) {
-                    write_pipe(pipe_server_1.id_in, container);
+                    write_pipe(pipe_server_1.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_1.id_out, container_data);
-                    write_pipe(pipe_client_4.id_in, container_data);
+                    read_pipe(pipe_server_1.id_in, container_data);
+                    write_pipe(pipe_client_4.id_out, container_data);
                 } else if (atoi(address_server) == 3 && nb_server >= 3) {
-                    write_pipe(pipe_server_2.id_in, container);
+                    write_pipe(pipe_server_2.id_out, container);
                     char container_data[BUFFER_SIZE];
-                    read_pipe(pipe_server_2.id_out, container_data);
-                    write_pipe(pipe_client_4.id_in, container_data);
+                    read_pipe(pipe_server_2.id_in, container_data);
+                    write_pipe(pipe_client_4.id_out, container_data);
                 } else {
-                    printf("Server unreachable !");
+                    printf("Server unreachable !\n");
                 }
             }
         }

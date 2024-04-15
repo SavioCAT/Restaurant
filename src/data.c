@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include "../header/pipe_controler.h"
 
 #define BUFFER_SIZE 4096
@@ -13,45 +14,65 @@ static char file_address[64];
 static int nb_max_client;
 static int nb_server;
 
-char* reading_request_from_pipe() {
-
-    char request[STRING_SIZE];
-    strcat(request, file_address);
-
-    char* text = (char*) malloc(BUFFER_SIZE); //Allocating memory for the text
-    read_pipe(local_server_pipe.id_in, text); //Reading the request from the pipe
-    return text;
+void ending_program(int signal) {
+    if (signal == SIGINT) {
+        printf("\nCTRL+C pressed, ending the process.\n");
+        char old_name_right[64];
+        char old_name_left[64];
+        char new_name_right[64];
+        char new_name_left[64];
+        snprintf(old_name_right, sizeof(old_name_right), "used_pipe_server_right%d", server_id - 1);
+        snprintf(old_name_left, sizeof(old_name_left), "used_pipe_server_left%d", server_id - 1);
+        snprintf(new_name_right, sizeof(new_name_right), "pipe_server_right%d", server_id - 1);
+        snprintf(new_name_left, sizeof(new_name_left), "pipe_server_left%d", server_id - 1);
+        rename(old_name_right, new_name_right);
+        rename(old_name_left, new_name_left);
+        exit(0);
+    }
 }
 
 int read_txt_doc() {
-    char* name = reading_request_from_pipe(); //Reading the request from the pipe //DEBUG
+    char text[32];
+    char request_restaurant[5];
+    char request_menu[5];
+    read_pipe(local_server_pipe.id_in, text);
+
+    strncpy(request_restaurant, text + 5, 4);
+    request_restaurant[4] = '\0';
+    strncpy(request_menu, text + 10, 4);
+    request_menu[4] = '\0';
+
+    char request[STRING_SIZE];
+    request[0] = '\0';
+    strcat(request, file_address);
+    strcat(request, "/");
+    strcat(request, request_restaurant); strcat(request, "/");
+    strcat(request, request_menu); strcat(request, ".txt"); //Creating the good path to the file who will be read
+
     FILE* f;
-    f = fopen(name, "r"); //Opening the file in read mode
+    f = fopen(request, "r"); //Opening the file in read mode
 
     char* buffer_read = (char *)malloc(BUFFER_SIZE); //Allocating memory for the buffer who will read the file
-    char* word = (char *)malloc(BUFFER_SIZE);
+    char word;
 
     if (f == NULL) {
-        printf("Error: Error while opening the file: %s\n", name);
+        printf("Error: Error while opening the file: %s\n", request);
         return 0;
     }
 
-    while (fscanf(f, "%c", word) != EOF) { //Reading the file and writing the data to the pipe
-        strcat(buffer_read, word);
+    while (fscanf(f, "%c", &word) != EOF) { //Reading the file and writing the data to the pipe
+        strncat(buffer_read, &word, 1);
     }
     strcat(buffer_read, "\n");
     write_pipe(local_server_pipe.id_out, buffer_read); //Writing the data to the pipe
 
-    //printf("%s", buffer_read); //debug
-    strcpy(buffer_read, ""); //Clearing the buffer
-
     fclose(f); //Closing the file
     free(buffer_read);
-    free(word);
     return 1;
 }
 
 int main(int argc, char *argv[]) {
+    signal(SIGINT, ending_program); // We're handling the case where the user press ctrl+c
     /**
      * Here we're verifying the number of arguments. I we've too much or not enought of arguments we're exiting the process.
      */
@@ -62,6 +83,7 @@ int main(int argc, char *argv[]) {
         printf("Not enought arguments\ntypo: ./main_server.out {id} {path}\n");
         exit(0);
     }
+    printf("Press ctrl+c to kill the process\n");
 
     /**
      * This block is usefull to know the max of client and server.
@@ -84,15 +106,34 @@ int main(int argc, char *argv[]) {
     char name_pipe_in[STRING_SIZE];
     char name_pipe_out[STRING_SIZE];
     snprintf(name_pipe_in, sizeof(name_pipe_in), "pipe_server_right%d",server_id - 1);
-    snprintf(name_pipe_out, sizeof(name_pipe_in), "pipe_server_left%d",server_id - 1);
+    snprintf(name_pipe_out, sizeof(name_pipe_out), "pipe_server_left%d",server_id - 1);
 
-    initialise_pipe(&local_server_pipe, name_pipe_in, name_pipe_out);
+    int result = initialise_pipe(&local_server_pipe, name_pipe_in, name_pipe_out);
+    if (result <= 0) {
+        printf("Exiting the process.\n");
+        exit(0);
+    }
+
+    char old_name_right[64];
+    char old_name_left[64];
+    char new_name_right[64];
+    char new_name_left[64];
+    snprintf(old_name_right, sizeof(old_name_right), "pipe_server_right%d", server_id-1);
+    snprintf(old_name_left, sizeof(old_name_left), "pipe_server_left%d", server_id-1);
+    snprintf(new_name_right, sizeof(new_name_right), "used_pipe_server_right%d", server_id-1);
+    snprintf(new_name_left, sizeof(new_name_left), "used_pipe_server_left%d", server_id-1);
+    rename(old_name_right, new_name_right);
+    rename(old_name_left, new_name_left);
 
     while(1) {
-        usleep(50000);
-
+        usleep(10000);
         if(is_pipe_empty(local_server_pipe.id_in) == 0) {
-
+            printf("data received from routing.\n");
+            int result = read_txt_doc();
+            if (result == 0) {
+                printf("Error while reading the file.\n");
+                exit(0);
+            }
         }
     }
 }

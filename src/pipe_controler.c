@@ -36,7 +36,7 @@ int create_pipe(char* name_1, char* name_2) {
 
 int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
     int open_in = open(name_1, O_RDWR);
-    int open_out = open(name_1, O_RDWR);
+    int open_out = open(name_2, O_RDWR);
 
     self->id_in = open_in;
     self->id_out = open_out;
@@ -46,7 +46,7 @@ int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
         return 1;
     }
     else {
-        printf("Problem encountered while opening pipe \n");
+        printf("Problem encountered while opening the pipe \n");
         return -1;
     }
 }
