@@ -1,3 +1,22 @@
-Restaurant: Good and Tasty
+Menu 3 - Cuisine Japonaise
 
-des burgers
+    Entrées
+        Soupe miso
+        Edamame
+        Sashimi assortis
+        Gyoza
+    Plats Principaux
+        Sushi (sélection du chef)
+        Tempura de légumes
+        Tonkatsu
+        Udon au bouillon
+    Desserts
+        Mochi
+        Dorayaki
+        Anmitsu
+        Matcha glacé
+    Boissons
+        Saké
+        Thé vert japonais
+        Bière Asahi
+        Whisky japonais

@@ -1,3 +1,22 @@
-Liste des lieux de restauration
-"Le Bistrot" 1234 "Resto_1.txt"
-"Good and Tasty" 5678 "Resto_2.txt"
+Menu 1 - Cuisine Française
+
+    Entrées
+        Soupe à l'oignon
+        Salade niçoise
+        Escargots de Bourgogne
+        Pâté en croûte
+    Plats Principaux
+        Boeuf bourguignon
+        Coq au vin
+        Ratatouille
+        Quiche Lorraine
+    Desserts
+        Tarte Tatin
+        Crème brûlée
+        Mousse au chocolat
+        Macarons
+    Boissons
+        Vin rouge de Bordeaux
+        Vin blanc de Loire
+        Eau minérale
+        Café français

@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     }
 
     while(1) {
-        usleep(500000);
+        usleep(5000);
         if (nb_client == 1) {
             if (is_pipe_empty(pipe_client_0.id_in) == 0) {
                 printf("data received from client 0\n");

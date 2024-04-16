@@ -1,3 +1,22 @@
-Entree:21
-Plat:21
-Dessert:21
+Menu 2 - Cuisine Italienne
+
+    Entrées
+        Bruschetta
+        Carpaccio de bœuf
+        Salade Caprese
+        Arancini
+    Plats Principaux
+        Lasagne
+        Risotto aux champignons
+        Pizza Margherita
+        Osso buco
+    Desserts
+        Tiramisu
+        Panna cotta
+        Gelato (vanille, pistache, chocolat)
+        Cannoli
+    Boissons
+        Chianti
+        Prosecco
+        Limoncello
+        Espresso

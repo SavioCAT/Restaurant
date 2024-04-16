@@ -13,6 +13,12 @@ static int server_id;
 static char file_address[64];
 static int nb_max_client;
 static int nb_server;
+static char text[32];
+static char request_restaurant[5];
+static char request_menu[5];
+static char request[STRING_SIZE];
+static char buffer_read[BUFFER_SIZE];
+static char word;
 
 void ending_program(int signal) {
     if (signal == SIGINT) {
@@ -31,10 +37,23 @@ void ending_program(int signal) {
     }
 }
 
+void reset_value() {
+    for (int i = 0; i < sizeof(text)/sizeof(char); i++) {
+        text[i] = '\0';
+    }
+    for (int i = 0; i < sizeof(request_menu)/sizeof(char); i++) {
+        request_menu[i] = '\0';
+        request_restaurant[i] = '\0';
+    }
+    for (int i = 0; i < sizeof(request)/sizeof(char); i++) {
+        request[i] = '\0';
+        buffer_read[i] = '\0';
+    }
+    word = '\0';
+}
+
 int read_txt_doc() {
-    char text[32];
-    char request_restaurant[5];
-    char request_menu[5];
+    reset_value();
     read_pipe(local_server_pipe.id_in, text);
 
     strncpy(request_restaurant, text + 5, 4);
@@ -42,7 +61,6 @@ int read_txt_doc() {
     strncpy(request_menu, text + 10, 4);
     request_menu[4] = '\0';
 
-    char request[STRING_SIZE];
     request[0] = '\0';
     strcat(request, file_address);
     strcat(request, "/");
@@ -51,9 +69,6 @@ int read_txt_doc() {
 
     FILE* f;
     f = fopen(request, "r"); //Opening the file in read mode
-
-    char* buffer_read = (char *)malloc(BUFFER_SIZE); //Allocating memory for the buffer who will read the file
-    char word;
 
     if (f == NULL) {
         printf("Error: Error while opening the file: %s\n", request);
@@ -67,7 +82,6 @@ int read_txt_doc() {
     write_pipe(local_server_pipe.id_out, buffer_read); //Writing the data to the pipe
 
     fclose(f); //Closing the file
-    free(buffer_read);
     return 1;
 }
 
@@ -126,14 +140,10 @@ int main(int argc, char *argv[]) {
     rename(old_name_left, new_name_left);
 
     while(1) {
-        usleep(10000);
+        usleep(25000);
         if(is_pipe_empty(local_server_pipe.id_in) == 0) {
             printf("data received from routing.\n");
-            int result = read_txt_doc();
-            if (result == 0) {
-                printf("Error while reading the file.\n");
-                exit(0);
-            }
+            read_txt_doc();
         }
     }
 }
