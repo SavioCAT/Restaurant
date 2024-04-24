@@ -52,6 +52,8 @@ int initialise_pipe(Pipe* self, char* name_1, char* name_2) {
 }
 
 int write_pipe(int self, char* text) {
+
+	
     if (self > 0) {
         char* buffer = (char*)malloc(BUFFER_SIZE); //Allocating memory for the buffer
         strcpy(buffer, text); //Copying the text to the buffer

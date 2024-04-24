@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     /**
      * This block is usefull to know the max of client and server.
      */
-    FILE * file = fopen("value.txt", "r");
+    FILE * file = fopen("value.txt", "r"); // Opening the file to know how many client is permitted and how many server is permitted.
     if (file == NULL) {
         printf("Failed to open value.txt\n");
         exit(1);
