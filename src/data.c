@@ -79,6 +79,7 @@ int read_txt_doc() {
         strncat(buffer_read, &word, 1);
     }
     strcat(buffer_read, "\n");
+    buffer_read[4095] = '\0';
     write_pipe(local_server_pipe.id_out, buffer_read); //Writing the data to the pipe
 
     fclose(f); //Closing the file
