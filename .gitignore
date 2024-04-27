@@ -1,3 +1,4 @@
 *.out
 cmake-build-debug
 bin
+.DS_Store
