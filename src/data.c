@@ -12,8 +12,6 @@
 static Pipe local_server_pipe;
 static int server_id;
 static char file_address[64];
-static int nb_max_client;
-static int nb_server;
 static char text[32];
 static char request_restaurant[5];
 static char request_menu[5];
@@ -102,21 +100,6 @@ int main(int argc, char *argv[]) {
     }
     printf("Press ctrl+c to kill the process\n");
 
-    /**
-     * This block is usefull to know the max of client and server.
-     */
-    FILE * file = fopen("value.txt", "r");
-    if (file == NULL) {
-        printf("Failed to open value.txt\n");
-        exit(1);
-    }
-    char line[BUFFER_SIZE];
-    fgets(line, sizeof(line), file);
-    nb_max_client = atoi(line);
-    fgets(line, sizeof(line), file);
-    nb_server = atoi(line);
-    fclose(file);
-
     server_id = atoi(argv[1]);
     snprintf(file_address, sizeof(file_address), "%s", argv[2]);
 
@@ -143,7 +126,7 @@ int main(int argc, char *argv[]) {
     rename(old_name_left, new_name_left);
 
     while(1) {
-        usleep(25000);
+        usleep(100);
         if(is_pipe_empty(local_server_pipe.id_in) == 0) {
             printf("data received from routing.\n");
             read_txt_doc();

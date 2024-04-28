@@ -4,15 +4,13 @@
 #include <string.h>
 #include <unistd.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 2048
 #define STRING_SIZE 256
-
 
 static Pipe pipe_client_0, pipe_client_1, pipe_client_2, pipe_client_3, pipe_client_4;
 static Pipe pipe_server_0, pipe_server_1, pipe_server_2;
 static int nb_client;
 static int nb_server;
-
 
 int main(int argc, char *argv[]) {
     nb_client = atoi(argv[1]);
